@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F1C066D62D0AE9EE001514EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F1C066D52D0AE9EE001514EA /* SnapKit */; };
+		F1C066D92D0AE9FE001514EA /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F1C066D82D0AE9FE001514EA /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		F1C066BC2D0AE939001514EA /* Testtask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Testtask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1C066D92D0AE9FE001514EA /* Kingfisher in Frameworks */,
+				F1C066D62D0AE9EE001514EA /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,8 @@
 			);
 			name = Testtask;
 			packageProductDependencies = (
+				F1C066D52D0AE9EE001514EA /* SnapKit */,
+				F1C066D82D0AE9FE001514EA /* Kingfisher */,
 			);
 			productName = Testtask;
 			productReference = F1C066BC2D0AE939001514EA /* Testtask.app */;
@@ -107,6 +116,10 @@
 			);
 			mainGroup = F1C066B32D0AE939001514EA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F1C066D42D0AE9EE001514EA /* XCRemoteSwiftPackageReference "SnapKit" */,
+				F1C066D72D0AE9FE001514EA /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F1C066BD2D0AE939001514EA /* Products */;
 			projectDirPath = "";
@@ -150,7 +163,6 @@
 				INFOPLIST_FILE = Testtask/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -178,7 +190,6 @@
 				INFOPLIST_FILE = Testtask/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -335,6 +346,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F1C066D42D0AE9EE001514EA /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		F1C066D72D0AE9FE001514EA /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F1C066D52D0AE9EE001514EA /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1C066D42D0AE9EE001514EA /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		F1C066D82D0AE9FE001514EA /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1C066D72D0AE9FE001514EA /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F1C066B42D0AE939001514EA /* Project object */;
 }
