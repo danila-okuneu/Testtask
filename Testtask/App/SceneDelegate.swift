@@ -20,7 +20,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		window = UIWindow(frame: windowScene.coordinateSpace.bounds)
 		window?.windowScene = windowScene
 		window?.rootViewController = TabRouter.start()
-		print(UIFont.familyNames)
 		window?.makeKeyAndVisible()
 	}
 
