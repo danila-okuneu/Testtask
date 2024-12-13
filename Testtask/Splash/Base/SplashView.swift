@@ -39,6 +39,14 @@ final class SplashViewController: UIViewController, SplashViewProtocol {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		setupViews()
+		
+		Task {
+			
+			try? await Task.sleep(nanoseconds: 3 * 1_000_000_000)
+			
+		}
+		
 	}
 	
 	// Layout

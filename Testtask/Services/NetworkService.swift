@@ -26,7 +26,7 @@ final class NetworkService {
 		
 	func fetchToken() async throws -> String {
 		
-		guard let url = makeURL(for: .fetchToken) else { throw URLError(.badURL) }
+		guard let url = makeURL(to: .fetchToken) else { throw URLError(.badURL) }
 		
 		let (data, response) = try await session.data(from: url)
 		
@@ -35,17 +35,36 @@ final class NetworkService {
 		switch httpResponse.statusCode {
 		case 200...299:
 			let decoder = JSONDecoder()
+			
 			let tokenResponse = try decoder.decode(TokenResponse.self, from: data)
 			return tokenResponse.token
 		default:
 			throw URLError(.badServerResponse)
 		}
+	}
+	
+	func fetchUsers(page: Int, count: Int = 6) async throws -> UsersResponse {
 		
+		guard let url = makeURL(to: .fetchUsers(page: page, count: count)) else { throw URLError(.badURL) }
+
+		let (data, response) = try await session.data(from: url)
 		
+		guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.cannotParseResponse) }
+		
+		switch httpResponse.statusCode {
+		case 200...299:
+			let decoder = JSONDecoder()
+			decoder.keyDecodingStrategy = .convertFromSnakeCase
+			
+			let users = try decoder.decode(UsersResponse.self, from: data)
+			return users
+		default:
+			throw URLError(.badServerResponse)
+		}
 	}
 	
 	
-	private func makeURL(for request: RequestType) -> URL? {
+	private func makeURL(to request: RequestType) -> URL? {
 		
 		var components = URLComponents()
 		components.scheme = "https"
@@ -67,20 +86,45 @@ final class NetworkService {
 		}
 		return components.url
 	}
-	
-	
-	
 }
 
 // MARK: - HTTP Method Enum
 enum RequestType {
-	case fetchUsers(page: Int, count: Int = 6)
+	case fetchUsers(page: Int, count: Int)
 	case fetchToken
 	case registerUser
 }
 
-
 struct TokenResponse: Decodable {
 	let success: Bool
 	let token: String
+}
+
+struct User: Decodable {
+	let id: Int
+	let name: String
+	let email: String
+	let phone: String
+	let position: String
+	let photo: String
+}
+
+struct UsersResponse: Decodable {
+	let success: Bool
+	let totalPages: Int
+	let totalUsers: Int
+	let page: Int
+	
+	let links: UsersLinks
+	
+	let users: [User]
+	
+	
+	
+}
+
+struct UsersLinks: Decodable {
+	let nextUrl: String?
+	let prevUrl: String?
+	
 }

@@ -26,6 +26,21 @@ protocol SignUpViewOutputs: AnyObject {
 // MARK: - View
 final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
+	let textField = CustomTextField(placeholder: "Phone", hint: "+375 (25) 727-07-03")
+		
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
+		view.addSubview(textField)
+		textField.snp.makeConstraints { make in
+			make.height.equalTo(90)
+			make.center.equalToSuperview()
+			make.horizontalEdges.equalToSuperview().inset(20)
+		}
+		
+	}
+	
+	
 	var presenter: SignUpPresenterProtocol?
 	
 }
@@ -36,3 +51,9 @@ extension SignUpViewController: SignUpViewInputs, SignUpViewOutputs {
 	// Extend functionality
 }
 
+
+
+@available(iOS 17.0, *)
+#Preview {
+	return SignUpViewController()
+}
