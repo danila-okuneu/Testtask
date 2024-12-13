@@ -51,6 +51,7 @@ final class SignUpTextField: UIView {
 		placeholderLabel.text = placeholder
 		supportingLabel.text = hint
 		
+		
 		setupViews()
 		
 

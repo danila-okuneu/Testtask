@@ -26,22 +26,36 @@ protocol SignUpViewOutputs: AnyObject {
 // MARK: - View
 final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
-	let textField = SignUpTextField(placeholder: "Phone", hint: "+375 (25) 727-07-03")
+	
+	// MARK: - UIComponents
+	
+	private let scrollView: UIScrollView = {
+		let scrollView = UIScrollView()
+		scrollView.alwaysBounceVertical = true
+		scrollView.showsVerticalScrollIndicator = false
+		return scrollView
+	}()
+	private let contentView = UIView()
+	
+	
+	private let fieldsStackView: UIStackView = {
+		let stack = UIStackView()
+		stack.axis = .vertical
+		stack.spacing = Constants.offset
+		return stack
 		
+	}()
+	private let nameTextField = SignUpTextField(placeholder: "Your name")
+	private let emailTextField = SignUpTextField(placeholder: "Email")
+	private let phoneTextField = SignUpTextField(placeholder: "Phone", hint: "+38 (XXX) XXX - XX - XX")
+	
+		
+	
+	// MARK: - Life cycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		view.backgroundColor = .systemGray6
-		
-		view.addSubview(textField)
-		textField.snp.makeConstraints { make in
-		
-			
-			make.center.equalToSuperview()
-			make.horizontalEdges.equalToSuperview().inset(20)
-		}
-		
-		
+	
+		setupViews()
 		let appearance = UINavigationBarAppearance()
 		appearance.backgroundColor = .accent
 	
@@ -51,8 +65,64 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 24)]
 	}
 	
+	// MARK: - Layout
+	private func setupViews() {
+		
+		view.backgroundColor = .white
+		
+		view.addSubview(scrollView)
+		scrollView.addSubview(contentView)
+		setupScrollView()
+		
+		contentView.addSubview(fieldsStackView)
+		fieldsStackView.addArrangedSubview(nameTextField)
+		fieldsStackView.addArrangedSubview(emailTextField)
+		fieldsStackView.addArrangedSubview(phoneTextField)
+		setupConstraints()
+		
+	}
+	
+	private func setupConstraints() {
+		
+		fieldsStackView.snp.makeConstraints { make in
+			make.left.right.equalToSuperview()
+			make.top.equalToSuperview()
+			make.bottom.equalToSuperview()
+		
+		}
+		
+	}
+	
+	private func setupScrollView() {
+		
+		
+		scrollView.snp.makeConstraints { make in
+			make.horizontalEdges.equalToSuperview().inset(Constants.contentPadding)
+			make.verticalEdges.equalToSuperview()
+		}
+		
+		contentView.snp.makeConstraints { make in
+			make.width.equalToSuperview()
+			make.top.equalToSuperview().offset(Constants.offset)
+		}
+		
+	}
 	
 	var presenter: SignUpPresenterProtocol?
+	
+}
+
+// MARK: - Constants
+extension SignUpViewController {
+	
+	private struct Constants {
+		
+		
+		static let contentPadding = 16 * CGFloat.ratio
+		static let offset = 32 * CGFloat.ratio
+		
+		
+	}
 	
 }
 
