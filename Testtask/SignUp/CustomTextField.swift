@@ -14,8 +14,9 @@ final class CustomTextField: UIView {
 	let textFieldView: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
-		view.layer.cornerRadius = 10
-		view.layer.borderWidth = 2
+		view.layer.cornerRadius = Constants.cornerRadius
+		view.layer.borderWidth = 1
+		view.layer.borderColor = UIColor.secondary.cgColor
 		return view
 	}()
 	
@@ -27,7 +28,8 @@ final class CustomTextField: UIView {
 	lazy var hintLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Hint"
-		label.font = .nunitoSans(ofSize: 12)
+		label.textColor = .fieldHint
+		label.font = .nunitoSans(ofSize: Constants.secondaryFontSyze)
 		return label
 	}()
 	
@@ -36,7 +38,8 @@ final class CustomTextField: UIView {
 		label.text = "Placeholder"
 		label.adjustsFontSizeToFitWidth = true
 		label.minimumScaleFactor = 0.2
-		label.font = .systemFont(ofSize: 20)
+		label.textColor = .secondary
+		label.font = .nunitoSans(ofSize: Constants.placeholderFontSize)
 		return label
 	}()
 	
@@ -52,16 +55,25 @@ final class CustomTextField: UIView {
 		
 
 	}
+	
 	@available(*, unavailable)
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
 	
+	// MARK: - Life cycle
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		setupConstraints()
+	}
+	
+	// MARK: - Layout
 	private func setupViews() {
 		
 		let paddingView = UIView()
-		paddingView.frame.size = CGSize(width: 20, height: 1)
+		paddingView.frame.size = CGSize(width: Constants.leftPadding, height: 1)
 		textField.leftView = paddingView
 		textField.leftViewMode = .always
 		
@@ -73,7 +85,7 @@ final class CustomTextField: UIView {
 		
 		textField.delegate = self
 		
-		setupConstraints()
+		
 	}
 	
 	private func setupConstraints() {
@@ -85,44 +97,38 @@ final class CustomTextField: UIView {
 		
 		textField.snp.makeConstraints { make in
 			make.left.bottom.right.equalToSuperview()
-			make.height.equalTo(50)
+			make.height.equalTo(Constants.fieldHeight)
 		}
 		
 		placeholderLabel.snp.makeConstraints { make in
 			make.centerY.equalToSuperview()
-			make.left.equalToSuperview().offset(20)
+			make.left.equalToSuperview().offset(Constants.leftPadding)
 		}
 		
 		hintLabel.snp.makeConstraints { make in
 			make.top.equalTo(textField.snp.bottom).offset(5)
-			make.left.equalToSuperview().offset(15)
+			make.left.equalToSuperview().offset(Constants.leftPadding)
 		}
 		
 	}
 
-	
-	
-	
+	// MARK: - Methods
 	func movePlaceholder() {
 		
 		
-		let scale = 0.7
+		let scale = Constants.placeholderRatio
 		let translationX = -placeholderLabel.bounds.width * (1 - scale) / 2
-		let translationY = -self.textFieldView.bounds.height / 2 + 20
+		let translationY = -self.textFieldView.bounds.height / 2 + placeholderLabel.bounds.height / 2 + Constants.placeholderTopOffset
 		
 		
 		UIView.animate(withDuration: 0.3) {
 			self.placeholderLabel.transform = CGAffineTransform(scale, 0, 0, scale, translationX, translationY)
-			
-			
 		}
 	}
 	
 	func resetPlaceholder() {
 		UIView.animate(withDuration: 0.3) {
 			self.placeholderLabel.transform = .identity
-			
-			
 		}
 		
 		
@@ -142,7 +148,45 @@ final class CustomTextField: UIView {
 	
 }
 
+// MARK: - Constants
+extension CustomTextField {
+	
+	
+	// xO
+	// O - offset
+	// x - Top, Left, Bottom, Right
+	
+	private struct Constants {
+		
+		
+		static let cornerRadius = 4 * CGFloat.ratio
+		
+		
+		static let fieldHeight = 56 * CGFloat.ratio
+		static let leftPadding = 16 * CGFloat.ratio
+		
+		static let placeholderFontSize = 16 * CGFloat.ratio
+		static let placeholderRatio = 12 / placeholderFontSize
+		static let placeholderTopOffset = 8 * CGFloat.ratio
+		
+		static let secondaryFontSyze = 12 / CGFloat.ratio
+	}
+	
+}
 
+extension CGFloat {
+	
+	static let ratio: CGFloat = {
+		
+		guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return 1.0 }
+		   guard let window = windowScene.windows.first else { return 1.0 }
+			   
+		   return window.bounds.width / 360
+	   }()
+	
+}
+
+// MARK: - TextField Delegate
 extension CustomTextField: UITextFieldDelegate {
 	
 	func textFieldDidBeginEditing(_ textField: UITextField) {

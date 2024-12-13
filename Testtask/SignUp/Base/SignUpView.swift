@@ -31,6 +31,8 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		view.backgroundColor = .systemGray6
+		
 		view.addSubview(textField)
 		textField.snp.makeConstraints { make in
 			make.height.equalTo(90)

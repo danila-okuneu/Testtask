@@ -28,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			}
 		}
 		
-		window?.rootViewController = SignUpRouter.start()
+		window?.rootViewController = SplashRouter.start()
 		window?.makeKeyAndVisible()
 	}
 
