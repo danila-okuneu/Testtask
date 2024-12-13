@@ -35,11 +35,20 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 		view.addSubview(textField)
 		textField.snp.makeConstraints { make in
-			make.height.equalTo(90)
+		
+			
 			make.center.equalToSuperview()
 			make.horizontalEdges.equalToSuperview().inset(20)
 		}
 		
+		
+		let appearance = UINavigationBarAppearance()
+		appearance.backgroundColor = .accent
+	
+		
+		
+		self.navigationController?.navigationBar.backgroundColor = .accent
+		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 24)]
 	}
 	
 	

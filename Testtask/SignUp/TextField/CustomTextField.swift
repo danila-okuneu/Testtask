@@ -15,8 +15,8 @@ final class SignUpTextField: UIView {
 		let view = UIView()
 		view.backgroundColor = .white
 		view.layer.cornerRadius = Constants.cornerRadius
-		view.layer.borderWidth = 1
-		view.layer.borderColor = UIColor.secondary.cgColor
+		view.layer.borderWidth = 1.5
+		view.layer.borderColor = UIColor.fieldBorderNormal.cgColor
 		return view
 	}()
 	
@@ -25,7 +25,7 @@ final class SignUpTextField: UIView {
 		return field
 	}()
 	
-	lazy var hintLabel: UILabel = {
+	lazy var supportingLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Hint"
 		label.textColor = .fieldHint
@@ -49,7 +49,7 @@ final class SignUpTextField: UIView {
 		super.init(frame: .zero)
 		
 		placeholderLabel.text = placeholder
-		hintLabel.text = hint
+		supportingLabel.text = hint
 		
 		setupViews()
 		
@@ -78,12 +78,13 @@ final class SignUpTextField: UIView {
 		textField.leftViewMode = .always
 		
 		addSubview(textFieldView)
-		addSubview(hintLabel)
+		addSubview(supportingLabel)
 		
 		textFieldView.addSubview(textField)
 		textFieldView.addSubview(placeholderLabel)
 		
 		textField.delegate = self
+		
 		
 		
 	}
@@ -105,9 +106,10 @@ final class SignUpTextField: UIView {
 			make.left.equalToSuperview().offset(Constants.leftPadding)
 		}
 		
-		hintLabel.snp.makeConstraints { make in
+		supportingLabel.snp.makeConstraints { make in
 			make.top.equalTo(textField.snp.bottom).offset(5)
 			make.left.equalToSuperview().offset(Constants.leftPadding)
+			make.bottom.equalToSuperview()
 		}
 		
 	}

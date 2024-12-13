@@ -53,7 +53,7 @@ extension SplashPresenter: SplashPresenterInputs, SplashPresenterOutputs {
 			guard let window = scene.windows.first else { return }
 			
 			
-			let controller = SignUpRouter.start()
+			let controller = TabRouter.start()
 			
 			UIView.transition(with: window, duration: 0.3) {
 				window.rootViewController = controller
