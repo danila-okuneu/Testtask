@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CustomTextField: UIView {
+final class SignUpTextField: UIView {
 	
 	var isPlaceHorderCentered = true
 	
@@ -149,7 +149,7 @@ final class CustomTextField: UIView {
 }
 
 // MARK: - Constants
-extension CustomTextField {
+extension SignUpTextField {
 	
 	
 	// xO
@@ -187,7 +187,7 @@ extension CGFloat {
 }
 
 // MARK: - TextField Delegate
-extension CustomTextField: UITextFieldDelegate {
+extension SignUpTextField: UITextFieldDelegate {
 	
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		movePlaceholder()

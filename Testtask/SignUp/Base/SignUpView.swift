@@ -26,7 +26,7 @@ protocol SignUpViewOutputs: AnyObject {
 // MARK: - View
 final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
-	let textField = CustomTextField(placeholder: "Phone", hint: "+375 (25) 727-07-03")
+	let textField = SignUpTextField(placeholder: "Phone", hint: "+375 (25) 727-07-03")
 		
 	override func viewDidLoad() {
 		super.viewDidLoad()
