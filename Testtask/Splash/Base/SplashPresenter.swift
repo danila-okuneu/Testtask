@@ -5,8 +5,6 @@
 //  Created by Danila Okuneu on 12.12.24.
 //
 
-import UIKit
-
 // MARK: - Presenter Protocol
 protocol SplashPresenterProtocol: AnyObject {
 	
@@ -18,9 +16,6 @@ protocol SplashPresenterProtocol: AnyObject {
 protocol SplashPresenterInputs: AnyObject {
 	
 	// Define input methods
-	
-	func endLoading()
-	
 }
 
 protocol SplashPresenterOutputs: AnyObject {
@@ -43,27 +38,6 @@ final class SplashPresenter: SplashPresenterProtocol {
 // MARK: - Input & Output
 extension SplashPresenter: SplashPresenterInputs, SplashPresenterOutputs {
 	
-	func endLoading() {
-		changeController()
-	}
-	
-	private func changeController() {
-		
-		if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-			guard let window = scene.windows.first else { return }
-			
-			
-			let controller = SignUpRouter.start()
-			
-			UIView.transition(with: window, duration: 0.3) {
-				window.rootViewController = controller
-			}
-			
-			
-		}
-		
-		
-	}
 	// Extend functionality
 }
 

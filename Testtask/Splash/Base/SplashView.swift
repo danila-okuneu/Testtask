@@ -9,7 +9,7 @@ import UIKit
 
 protocol SplashViewProtocol: AnyObject {
 	
-	var presenter: SplashPresenterInputs? { get set }
+	var presenter: SplashPresenterProtocol? { get set }
 }
 
 protocol SplashViewInputs: AnyObject {
@@ -25,7 +25,7 @@ protocol SplashViewOutputs: AnyObject {
 // MARK: - View
 final class SplashViewController: UIViewController, SplashViewProtocol {
 	
-	var presenter: SplashPresenterInputs?
+	var presenter: SplashPresenterProtocol?
 	
 	// UI Components
 	private let logoImageView: UIImageView = {
@@ -40,9 +40,12 @@ final class SplashViewController: UIViewController, SplashViewProtocol {
 		super.viewDidLoad()
 		
 		setupViews()
-		presenter?.endLoading()
 		
-
+		Task {
+			
+			try? await Task.sleep(nanoseconds: 3 * 1_000_000_000)
+			
+		}
 		
 	}
 	
