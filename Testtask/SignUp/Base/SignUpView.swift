@@ -109,11 +109,6 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 	private func setupConstraints() {
 		
-		
-		uploadView.snp.makeConstraints { make in
-			make.height.equalTo(56)
-			
-		}
 	}
 	
 	private func setupScrollView() {

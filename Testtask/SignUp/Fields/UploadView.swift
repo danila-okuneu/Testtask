@@ -8,17 +8,9 @@
 import UIKit
 import SnapKit
 
-final class UploadView: UIView {
+final class UploadView: SupportedView {
 	
 	// MARK: - UI Components
-	private let uploadTitle: UILabel = {
-		let label = UILabel()
-		label.text = "Upload your photo"
-		label.font = .nunitoSans(ofSize: Constants.fontSize)
-		label.textColor = .secondary
-		return label
-	}()
-	
 	private let uploadButton: UIButton = {
 		let button = UIButton()
 		button.setTitle("Upload", for: .normal)
@@ -29,7 +21,7 @@ final class UploadView: UIView {
 	
 	// MARK: - Initializer
 	init() {
-		super.init(frame: .zero)
+		super.init(title: "Upload your photo")
 		setupViews()
 	}
 	
@@ -40,24 +32,12 @@ final class UploadView: UIView {
 	
 	// MARK: - Layout
 	private func setupViews() {
-		
-		layer.cornerRadius = Constants.cornerRadius
-		layer.borderWidth = Constants.borderWidth
-		layer.borderColor = UIColor.fieldBorderNormal.cgColor
-		
-		addSubview(uploadTitle)
+
 		addSubview(uploadButton)
-		
-		
 		setupConstraints()
 	}
 	
 	private func setupConstraints() {
-		
-		uploadTitle.snp.makeConstraints { make in
-			make.centerY.equalToSuperview()
-			make.left.equalToSuperview().inset(Constants.padding)
-		}
 		
 		uploadButton.snp.makeConstraints { make in
 			make.centerY.equalToSuperview()
@@ -65,8 +45,6 @@ final class UploadView: UIView {
 		}
 		
 	}
-	
-
 }
 
 
@@ -77,14 +55,9 @@ extension UploadView {
 		
 		static let ratio = CGFloat.ratio
 		
-		static let cornerRadius = 4 * ratio
-		static let borderWidth = 1.5 * ratio
-		
 		static let fontSize = 16 * ratio
 		
 		static let padding = 16 * ratio
-		
 	}
-	
 }
 
