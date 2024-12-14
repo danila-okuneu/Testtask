@@ -65,6 +65,8 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		"QA"
 	)
 	
+	private let uploadView = UploadView()
+	
 	// MARK: - Life cycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -95,6 +97,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 		contentView.addSubview(selectTitle)
 		contentView.addSubview(positionsList)
+		contentView.addSubview(uploadView)
 		setupConstraints()
 		
 	}
@@ -107,7 +110,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 
 		
 		}
-		contentView.clipsToBounds = true
+		
 		
 		selectTitle.snp.makeConstraints { make in
 			make.top.equalTo(fieldsStackView.snp.bottom).offset(24)
@@ -119,6 +122,12 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 			make.top.equalTo(selectTitle.snp.bottom).offset(24)
 			make.horizontalEdges.equalToSuperview()
 			make.bottom.equalToSuperview()
+		}
+		
+		uploadView.snp.makeConstraints { make in
+			make.horizontalEdges.equalToSuperview()
+			make.top.equalTo(positionsList.snp.bottom).offset(24)
+			make.height.equalTo(56)
 			
 		}
 	}
@@ -134,6 +143,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		contentView.snp.makeConstraints { make in
 			make.width.equalToSuperview()
 			make.top.equalToSuperview().offset(Constants.offset)
+			make.bottom.equalToSuperview()
 		}
 		
 	}
