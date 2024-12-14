@@ -50,6 +50,7 @@ final class PositionsList: UIStackView {
 		
 		let label = UILabel()
 		label.text = position
+		label.textColor = .primaryText
 		label.font = .nunitoSans(ofSize: Constants.positionFontSize)
 		
 		let hStack = UIStackView()

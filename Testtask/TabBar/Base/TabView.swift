@@ -32,14 +32,42 @@ protocol TabViewOutputs: AnyObject {
 final class TabViewController: UITabBarController, TabViewProtocol {
 	
 	var presenter: TabPresenterProtocol?
-	
-	
+
+	private let buttonsStack: UIStackView = {
+		let stack = UIStackView()
+		stack.axis = .horizontal
+		stack.alignment = .center
+		stack.distribution = .fillEqually
+		return stack
+	}()
+
+	private var customTabItems: [TabBarItemView] = []
+
+	init() {
+		super.init(nibName: nil, bundle: nil)
+		
+		// Спрячем стандартный UITabBarItem текст и картинки, чтобы они не мешали
+		tabBar.backgroundImage = UIImage()
+		tabBar.shadowImage = UIImage()
+		
+		// Добавляем свой stackView
+		tabBar.addSubview(buttonsStack)
+		buttonsStack.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+		}
+		tabBar.isTranslucent = false
+		tabBar.backgroundColor = .tabBarBackground
+		tabBar.barTintColor = .tabBarBackground
+	}
+
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		print(presenter)
 		presenter?.viewWillAppear()
 	}
-	
 }
 
 // MARK: - Input & Output
@@ -51,22 +79,34 @@ extension TabViewController: TabViewInputs, TabViewOutputs {
 		image: UIImage?,
 		selectedImage: UIImage? = nil
 	) {
-	
-		viewController.tabBarItem.title = title
-		viewController.tabBarItem.image = image
-		viewController.tabBarItem.selectedImage = selectedImage
 		
-		
-		print("added")
-		if let viewControllers {
-			
-			self.viewControllers?.append(viewController)
-			 
+		if let vcs = viewControllers {
+			viewControllers = vcs + [viewController]
 		} else {
 			viewControllers = [viewController]
 		}
+		
+		
+		let tabItemView = TabBarItemView()
+		tabItemView.configure(title: title, image: image, selectedImage: selectedImage)
+		
+		
+		let index = (viewControllers?.count ?? 1) - 1
+		tabItemView.button.tag = index
+		tabItemView.button.addTarget(self, action: #selector(handleTabTap(_:)), for: .touchUpInside)
+		
+		
+		buttonsStack.addArrangedSubview(tabItemView)
+		customTabItems.append(tabItemView)
 	}
 	
-	// Extend functionality
+	@objc private func handleTabTap(_ sender: UIButton) {
+		let index = sender.tag
+		selectedIndex = index
+		
+		
+		for (i, item) in customTabItems.enumerated() {
+			item.setSelected(i == index)
+		}
+	}
 }
-

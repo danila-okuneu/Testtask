@@ -27,7 +27,7 @@ final class TabRouter: TabRouterProtocol, TabRouterOutputs {
 	
 	static func start() -> UIViewController {
 		
-		let view = TabViewController(nibName: nil, bundle: nil)
+		let view = TabViewController()
 		let interactor = TabInteractor()
 		let presenter = TabPresenter(view: view, interactor: interactor)
 		

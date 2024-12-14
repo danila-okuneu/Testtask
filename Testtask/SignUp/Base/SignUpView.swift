@@ -33,6 +33,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		let scrollView = UIScrollView()
 		scrollView.alwaysBounceVertical = true
 		scrollView.showsVerticalScrollIndicator = false
+		scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
 		return scrollView
 	}()
 	
@@ -59,6 +60,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	private let selectTitle: UILabel = {
 		let label = UILabel()
 		label.text = "Select your position"
+		label.textColor = .primaryText
 		label.font = .nunitoSans(ofSize: Constants.selectTitleFontSize)
 		return label
 	}()
@@ -71,6 +73,8 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	)
 	
 	private let uploadView = UploadView()
+	
+	private let signUpButton = RoundedButton(with: "Sign Up")
 	
 	// MARK: - Life cycle
 	override func viewDidLoad() {
@@ -103,12 +107,23 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		contentStack.addArrangedSubview(selectTitle)
 		contentStack.addArrangedSubview(positionsList)
 		contentStack.addArrangedSubview(uploadView)
+		
+		let buttonContainer = UIView()
+		buttonContainer.addSubview(signUpButton)
+		
+		contentStack.addArrangedSubview(buttonContainer)
+		
+	
 		setupConstraints()
 		
 	}
 	
 	private func setupConstraints() {
 		
+		signUpButton.snp.makeConstraints { make in
+			make.centerX.equalToSuperview()
+			make.verticalEdges.equalToSuperview()
+		}
 	}
 	
 	private func setupScrollView() {
@@ -116,7 +131,8 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 		scrollView.snp.makeConstraints { make in
 			make.horizontalEdges.equalToSuperview().inset(Constants.contentPadding)
-			make.verticalEdges.equalToSuperview()
+			make.bottom.equalToSuperview()
+			make.top.equalToSuperview().offset(60)
 		}
 		
 		contentStack.snp.makeConstraints { make in
@@ -124,6 +140,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 			make.top.equalToSuperview().offset(Constants.offset)
 			make.bottom.equalToSuperview()
 		}
+		
 		
 	}
 	

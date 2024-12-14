@@ -38,7 +38,9 @@ extension TabPresenter {
 	
 	func viewWillAppear() {
 		
-		view?.addTab(signUpModule.navigated(), title: "Sign Up", image: UIImage(systemName: "person.3.sequence.fill"), selectedImage: nil)
+		view?.addTab(usersModule.navigated(), title: "Users", image: UIImage(systemName: "person.3.sequence.fill"), selectedImage: nil)
+		
+		view?.addTab(signUpModule.navigated(), title: "Sign Up", image: UIImage(systemName: "person.crop.circle.badge.plus"), selectedImage: nil)
 	}
 	
 	

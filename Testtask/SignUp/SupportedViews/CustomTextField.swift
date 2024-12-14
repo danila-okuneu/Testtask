@@ -13,6 +13,7 @@ final class SignUpTextField: SupportedView {
 	
 	let textField: UITextField = {
 		let field = UITextField()
+		field.textColor = .primaryText
 		return field
 	}()
 	
