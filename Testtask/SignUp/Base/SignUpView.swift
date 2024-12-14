@@ -36,7 +36,12 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		return scrollView
 	}()
 	
-	private let contentView = UIView()
+	private let contentStack: UIStackView = {
+		let stack = UIStackView()
+		stack.axis = .vertical
+		stack.spacing = Constants.stackSpacing
+		return stack
+	}()
 	
 	
 	private let fieldsStackView: UIStackView = {
@@ -87,46 +92,25 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		view.backgroundColor = .white
 		
 		view.addSubview(scrollView)
-		scrollView.addSubview(contentView)
+		scrollView.addSubview(contentStack)
 		setupScrollView()
 		
-		contentView.addSubview(fieldsStackView)
+		contentStack.addArrangedSubview(fieldsStackView)
 		fieldsStackView.addArrangedSubview(nameTextField)
 		fieldsStackView.addArrangedSubview(emailTextField)
 		fieldsStackView.addArrangedSubview(phoneTextField)
 		
-		contentView.addSubview(selectTitle)
-		contentView.addSubview(positionsList)
-		contentView.addSubview(uploadView)
+		contentStack.addArrangedSubview(selectTitle)
+		contentStack.addArrangedSubview(positionsList)
+		contentStack.addArrangedSubview(uploadView)
 		setupConstraints()
 		
 	}
 	
 	private func setupConstraints() {
 		
-		fieldsStackView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview()
-			make.top.equalToSuperview()
-
-		
-		}
-		
-		
-		selectTitle.snp.makeConstraints { make in
-			make.top.equalTo(fieldsStackView.snp.bottom).offset(24)
-			make.horizontalEdges.equalToSuperview()
-			
-		}
-		
-		positionsList.snp.makeConstraints { make in
-			make.top.equalTo(selectTitle.snp.bottom).offset(24)
-			make.horizontalEdges.equalToSuperview()
-			make.bottom.equalToSuperview()
-		}
 		
 		uploadView.snp.makeConstraints { make in
-			make.horizontalEdges.equalToSuperview()
-			make.top.equalTo(positionsList.snp.bottom).offset(24)
 			make.height.equalTo(56)
 			
 		}
@@ -140,7 +124,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 			make.verticalEdges.equalToSuperview()
 		}
 		
-		contentView.snp.makeConstraints { make in
+		contentStack.snp.makeConstraints { make in
 			make.width.equalToSuperview()
 			make.top.equalToSuperview().offset(Constants.offset)
 			make.bottom.equalToSuperview()
@@ -157,11 +141,12 @@ extension SignUpViewController {
 	
 	private struct Constants {
 		
+		private static let ratio = CGFloat.ratio
 		
-		static let contentPadding = 16 * CGFloat.ratio
-		static let offset = 32 * CGFloat.ratio
-		
-		static let selectTitleFontSize = 18 * CGFloat.ratio
+		static let contentPadding = 16 * ratio
+		static let offset = 32 * ratio
+		static let stackSpacing = 24 * ratio
+		static let selectTitleFontSize = 18 * ratio
 		
 	}
 	
