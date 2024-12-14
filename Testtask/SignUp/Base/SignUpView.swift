@@ -26,15 +26,16 @@ protocol SignUpViewOutputs: AnyObject {
 // MARK: - View
 final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
+	var presenter: SignUpPresenterProtocol?
 	
 	// MARK: - UIComponents
-	
 	private let scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
 		scrollView.alwaysBounceVertical = true
 		scrollView.showsVerticalScrollIndicator = false
 		return scrollView
 	}()
+	
 	private let contentView = UIView()
 	
 	
@@ -45,11 +46,24 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		return stack
 		
 	}()
+	
 	private let nameTextField = SignUpTextField(placeholder: "Your name")
 	private let emailTextField = SignUpTextField(placeholder: "Email")
 	private let phoneTextField = SignUpTextField(placeholder: "Phone", hint: "+38 (XXX) XXX - XX - XX")
 	
-		
+	private let selectTitle: UILabel = {
+		let label = UILabel()
+		label.text = "Select your position"
+		label.font = .nunitoSans(ofSize: Constants.selectTitleFontSize)
+		return label
+	}()
+	
+	private let positionsList = PositionsList(
+		positions: "Frontend developer",
+		"Backend developer",
+		"Designer",
+		"QA"
+	)
 	
 	// MARK: - Life cycle
 	override func viewDidLoad() {
@@ -78,6 +92,9 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		fieldsStackView.addArrangedSubview(nameTextField)
 		fieldsStackView.addArrangedSubview(emailTextField)
 		fieldsStackView.addArrangedSubview(phoneTextField)
+		
+		contentView.addSubview(selectTitle)
+		contentView.addSubview(positionsList)
 		setupConstraints()
 		
 	}
@@ -87,10 +104,23 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		fieldsStackView.snp.makeConstraints { make in
 			make.left.right.equalToSuperview()
 			make.top.equalToSuperview()
-			make.bottom.equalToSuperview()
+
 		
 		}
+		contentView.clipsToBounds = true
 		
+		selectTitle.snp.makeConstraints { make in
+			make.top.equalTo(fieldsStackView.snp.bottom).offset(24)
+			make.horizontalEdges.equalToSuperview()
+			
+		}
+		
+		positionsList.snp.makeConstraints { make in
+			make.top.equalTo(selectTitle.snp.bottom).offset(24)
+			make.horizontalEdges.equalToSuperview()
+			make.bottom.equalToSuperview()
+			
+		}
 	}
 	
 	private func setupScrollView() {
@@ -108,7 +138,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 	}
 	
-	var presenter: SignUpPresenterProtocol?
+	
 	
 }
 
@@ -121,6 +151,7 @@ extension SignUpViewController {
 		static let contentPadding = 16 * CGFloat.ratio
 		static let offset = 32 * CGFloat.ratio
 		
+		static let selectTitleFontSize = 18 * CGFloat.ratio
 		
 	}
 	
