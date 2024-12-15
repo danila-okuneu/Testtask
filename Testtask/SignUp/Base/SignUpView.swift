@@ -28,12 +28,17 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 	var presenter: SignUpPresenterProtocol?
 	
-	// MARK: - UIComponents
+	// MARK: - UI Components
 	private let scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
 		scrollView.alwaysBounceVertical = true
 		scrollView.showsVerticalScrollIndicator = false
-		scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
+		scrollView.contentInset = UIEdgeInsets(
+			top: Constants.offset,
+			left: 0,
+			bottom: Constants.offset,
+			right: 0
+		)
 		return scrollView
 	}()
 	
@@ -53,9 +58,9 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 	}()
 	
-	private let nameTextField = SignUpTextField(placeholder: "Your name")
-	private let emailTextField = SignUpTextField(placeholder: "Email")
-	private let phoneTextField = SignUpTextField(placeholder: "Phone", hint: "+38 (XXX) XXX - XX - XX")
+	private let nameTextField = SignUpTextField(placeholder: "Your name", ofType: .name)
+	private let emailTextField = SignUpTextField(placeholder: "Email", ofType: .email)
+	private let phoneTextField = SignUpTextField(placeholder: "Phone", supporting: "+38 (XXX) XXX - XX - XX", ofType: .phone)
 	
 	private let selectTitle: UILabel = {
 		let label = UILabel()
@@ -84,14 +89,16 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		let appearance = UINavigationBarAppearance()
 		appearance.backgroundColor = .accent
 	
-		
-		
 		self.navigationController?.navigationBar.backgroundColor = .accent
 		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 24)]
 	}
 	
 	// MARK: - Layout
 	private func setupViews() {
+		
+		
+		
+		navigationItem.title = "Working with POST request"
 		
 		view.backgroundColor = .white
 		
@@ -130,14 +137,14 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 		
 		scrollView.snp.makeConstraints { make in
+			make.top.equalTo(view.safeAreaLayoutGuide)
 			make.horizontalEdges.equalToSuperview().inset(Constants.contentPadding)
 			make.bottom.equalToSuperview()
-			make.top.equalToSuperview().offset(60)
 		}
 		
 		contentStack.snp.makeConstraints { make in
 			make.width.equalToSuperview()
-			make.top.equalToSuperview().offset(Constants.offset)
+			make.top.equalToSuperview()
 			make.bottom.equalToSuperview()
 		}
 		

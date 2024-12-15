@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  UserViewCell.swift
 //  Testtask
 //
 //  Created by Danila Okuneu on 14.12.24.
@@ -7,10 +7,12 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
+import SkeletonView
 
-final class TableViewCell: UITableViewCell {
+final class UserViewCell: UITableViewCell {
 	
-	static let identifire = "TableViewCell"
+	static let identifire = "UserCell"
 	
 	
 	private let hStack: UIStackView = {
@@ -24,6 +26,9 @@ final class TableViewCell: UITableViewCell {
 		let imageView = UIImageView()
 		imageView.backgroundColor = .systemGray6
 		imageView.image = .noConnection
+		imageView.isSkeletonable = true
+		imageView.layer.cornerRadius = Constants.photoSize / 2
+		imageView.layer.masksToBounds = true
 		return imageView
 	}()
 	
@@ -39,6 +44,7 @@ final class TableViewCell: UITableViewCell {
 		label.font = .nunitoSans(ofSize: 18)
 		label.text = "Danila Okunev"
 		label.numberOfLines = 0
+		label.isSkeletonable = true
 		return label
 	}()
 	
@@ -47,15 +53,27 @@ final class TableViewCell: UITableViewCell {
 		label.textColor = .secondaryText
 		label.text = "Junior iOS developer"
 		label.font = .nunitoSans(ofSize: 14)
+		label.isSkeletonable = true
 		return label
 	}()
 	
-	private let contactsLabel: UILabel = {
+	private let emailLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .primaryText
 		label.font = .nunitoSans(ofSize: 14)
 		label.numberOfLines = 2
-		label.text = "danila@okuneu.com\n+375 (25) 727-07-03"
+		label.text = "danila_okuneu@gmail.com"
+		label.isSkeletonable = true
+		return label
+	}()
+	
+	private let phoneLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = .primaryText
+		label.font = .nunitoSans(ofSize: 14)
+		label.numberOfLines = 2
+		label.text = "+375 (25) 727-07-03"
+		label.isSkeletonable = true
 		return label
 	}()
 	
@@ -84,8 +102,10 @@ final class TableViewCell: UITableViewCell {
 		
 		vStack.addArrangedSubview(nameLabel)
 		vStack.addArrangedSubview(positionLabel)
-		vStack.addArrangedSubview(contactsLabel)
+		vStack.addArrangedSubview(emailLabel)
+		vStack.addArrangedSubview(phoneLabel)
 		
+		vStack.setCustomSpacing(8, after: positionLabel)
 		
 		
 		setupConstraints()
@@ -102,15 +122,24 @@ final class TableViewCell: UITableViewCell {
 			make.size.equalTo(Constants.photoSize)
 			make.horizontalEdges.equalToSuperview()
 		}
+	}
+	
+	// MARK: - Methods
+	func update(with user: User) {
+		nameLabel.text = user.name
+		positionLabel.text = user.position
+		emailLabel.text = user.email
+		phoneLabel.text = user.phone
 		
-		
-		
+		guard let url = URL(string: user.photo) else { return }
+		photoImageView.kf.setImage(with: url)
 	}
 	
 	
 }
 
-extension TableViewCell {
+// MARK: - Constants
+extension UserViewCell {
 	
 	private struct Constants {
 		

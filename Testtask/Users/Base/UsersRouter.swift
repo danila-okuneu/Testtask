@@ -32,7 +32,7 @@ final class UsersRouter: UsersRouterProtocol, UsersRouterOutputs {
 		let presenter = UsersPresenter(view: view, interactor: interactor)
 		
 		view.presenter = presenter
-		interactor.presenter = presenter
+		interactor.output = presenter
 		
 		return view
 	}

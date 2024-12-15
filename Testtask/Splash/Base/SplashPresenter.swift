@@ -55,9 +55,10 @@ extension SplashPresenter: SplashPresenterInputs, SplashPresenterOutputs {
 			
 			let controller = TabRouter.start()
 			
-			UIView.transition(with: window, duration: 0.3) {
-				window.rootViewController = controller
-			}
+			
+			
+			window.rootViewController = controller
+	
 			
 			
 		}

@@ -5,34 +5,65 @@
 //  Created by Danila Okuneu on 12.12.24.
 //
 
+import Foundation
+
 // MARK: - Interactor Protocol
 protocol UsersInteractorProtocol: AnyObject {
 	
-	var presenter: UsersPresenterProtocol? { get set }
+	var output: UsersInteractorOutput? { get set }
 	
 }
 
-protocol UsersInteractorInputs: AnyObject {
+protocol UsersInteractorInput: AnyObject {
 	
-	// Define input methods
+	func fetchUsers(page: Int) async
+	func fetchNextPage() async
 }
 
-protocol UsersInteractorOutputs: AnyObject {
+protocol UsersInteractorOutput: AnyObject {
 	
-	// Define output methods
+	func didFetchUsers(_ response: UsersResponse)
+	func didFailToFetchUsers( error: Error)
+	
 }
 
 // MARK: - Interactor
 final class UsersInteractor: UsersInteractorProtocol {
 	
-	weak var presenter: UsersPresenterProtocol?
+	weak var output: UsersInteractorOutput?
+	var nextUrl: String?
+	var totalPages: Int?
 	
 }
 
-// MARK: - Input & Output
-extension UsersInteractor: UsersInteractorInputs, UsersInteractorOutputs {
+// MARK: - Input
+extension UsersInteractor: UsersInteractorInput {
+	func fetchNextPage() async {
+		guard let urlString = nextUrl, let url = URL(string: urlString) else { return }
+		do {
+			print(url)
+			let response = try await NetworkService.shared.fetchUsers(from: url)
+			self.nextUrl = response.links.nextUrl
+			output?.didFetchUsers(response)
+		} catch {
+			output?.didFailToFetchUsers(error: error)
+			
+		}
+	}
 	
-	// Extend functionality
+	func fetchUsers(page: Int = 1) async {
+		do {
+			let response = try await NetworkService.shared.fetchUsers(page: page)
+			self.nextUrl = response.links.nextUrl
+			self.totalPages = response.totalPages
+			
+			output?.didFetchUsers(response)
+		} catch {
+			output?.didFailToFetchUsers(error: error)
+
+		}
+		
+	}
 }
 
 

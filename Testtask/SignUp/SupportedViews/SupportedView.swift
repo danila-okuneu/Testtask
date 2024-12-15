@@ -10,6 +10,9 @@ import SnapKit
 
 class SupportedView: UIView {
 	
+	
+	let supporting: String
+	
 	let primaryView: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
@@ -21,9 +24,10 @@ class SupportedView: UIView {
 	
 	let supportingLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Hint"
+		label.text = "Supporting text"
 		label.textColor = .fieldHint
 		label.font = .nunitoSans(ofSize: Constants.supportingFontSyze)
+		label.numberOfLines = 1
 		return label
 	}()
 	
@@ -39,11 +43,12 @@ class SupportedView: UIView {
 	
 	
 	// MARK: - Initializers
-	init(title: String, hint: String = "") {
+	init(title: String, supporting: String = "") {
+		self.supporting = supporting
 		super.init(frame: .zero)
 		
 		titleLabel.text = title
-		supportingLabel.text = hint
+		supportingLabel.text = supporting
 		
 		
 		setupViews()
@@ -70,7 +75,7 @@ class SupportedView: UIView {
 		addSubview(primaryView)
 		addSubview(supportingLabel)
 		
-		primaryView.addSubview(titleLabel)
+		addSubview(titleLabel)
 		
 		setupConstraints()
 	}
@@ -83,7 +88,7 @@ class SupportedView: UIView {
 		}
 				
 		titleLabel.snp.makeConstraints { make in
-			make.centerY.equalToSuperview()
+			make.centerY.equalTo(primaryView)
 			make.left.equalToSuperview().offset(Constants.padding)
 		}
 		
@@ -91,9 +96,12 @@ class SupportedView: UIView {
 			make.top.equalTo(primaryView.snp.bottom).offset(5)
 			make.left.equalToSuperview().offset(Constants.padding)
 			make.bottom.equalToSuperview()
+			make.height.equalTo(Constants.supportingFontSyze)
 		}
-		
 	}
+	
+	// MARK: - Methods
+	
 }
 
 // MARK: - Constants

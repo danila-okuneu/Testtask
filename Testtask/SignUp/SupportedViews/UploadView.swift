@@ -33,7 +33,7 @@ final class UploadView: SupportedView {
 	// MARK: - Layout
 	private func setupViews() {
 
-		addSubview(uploadButton)
+		primaryView.addSubview(uploadButton)
 		setupConstraints()
 	}
 	

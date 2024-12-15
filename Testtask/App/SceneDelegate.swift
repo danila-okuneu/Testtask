@@ -19,15 +19,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		guard let windowScene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(frame: windowScene.coordinateSpace.bounds)
 		window?.windowScene = windowScene
-		Task {
-			do {
-				try await NetworkService.shared.fetchUsers(page: 45)
-			} catch {
-				print(error.localizedDescription)
-				
-			}
-		}
-		
 		window?.rootViewController = SplashRouter.start()
 		window?.makeKeyAndVisible()
 	}

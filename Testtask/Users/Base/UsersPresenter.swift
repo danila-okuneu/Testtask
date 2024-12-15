@@ -8,14 +8,14 @@
 // MARK: - Presenter Protocol
 protocol UsersPresenterProtocol: AnyObject {
 	
-	var view: UsersViewProtocol? { get set }
-	var interactor: UsersInteractorProtocol? {get set }
+	var view: UsersViewInputs? { get set }
+	var interactor: UsersInteractorInput? { get set }
 	
 }
 
-protocol UsersPresenterInputs: AnyObject {
+protocol UsersPresenterInput: AnyObject {
 	
-	// Define input methods
+	func viewWillAppear()
 }
 
 protocol UsersPresenterOutputs: AnyObject {
@@ -26,18 +26,40 @@ protocol UsersPresenterOutputs: AnyObject {
 // MARK: - Presenter
 final class UsersPresenter: UsersPresenterProtocol {
 	
-	weak var view: UsersViewProtocol?
-	var interactor: UsersInteractorProtocol?
+	weak var view: UsersViewInputs?
+	var interactor: UsersInteractorInput?
 	
-	init(view: UsersViewProtocol?, interactor: UsersInteractorProtocol?) {
+	init(view: UsersViewInputs?, interactor: UsersInteractorInput?) {
 		self.view = view
 		self.interactor = interactor
 	}
 }	
 
-// MARK: - Input & Output
-extension UsersPresenter: UsersPresenterInputs, UsersPresenterOutputs {
+// MARK: - Input
+extension UsersPresenter: UsersPresenterInput {
 	
-	// Extend functionality
+	func viewWillAppear() {
+		Task {
+			await interactor?.fetchUsers(page: 1)
+		}
+	}
 }
 
+// MARK: - Interactor Output
+extension UsersPresenter: UsersInteractorOutput, UsersViewOutputs {
+	func userDidScrollToEnd() async {
+		await interactor?.fetchNextPage()
+	}
+	
+	func didFailToFetchUsers(error: any Error) {
+		print("Can't fetch users")
+	}
+	
+	func didFetchUsers(_ response: UsersResponse) {
+		view?.updateUsers(response.users, count: response.totalUsers)
+	}
+	
+	
+	
+	
+}

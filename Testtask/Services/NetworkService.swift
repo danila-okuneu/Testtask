@@ -63,6 +63,21 @@ final class NetworkService {
 		}
 	}
 	
+	func fetchUsers(from url: URL) async throws -> UsersResponse {
+		let (data, response) = try await session.data(from: url)
+		
+		guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.cannotParseResponse) }
+		
+		switch httpResponse.statusCode {
+		case 200...299:
+			let decoder = JSONDecoder()
+			decoder.keyDecodingStrategy = .convertFromSnakeCase
+			return try decoder.decode(UsersResponse.self, from: data)
+		default:
+			throw URLError(.badServerResponse)
+		}
+	}
+	
 	
 	private func makeURL(to request: RequestType) -> URL? {
 		
