@@ -29,10 +29,17 @@ final class TabRouter: TabRouterProtocol, TabRouterOutputs {
 		
 		let view = TabViewController()
 		let interactor = TabInteractor()
-		let presenter = TabPresenter(view: view, interactor: interactor)
-		
+		let presenter = TabPresenter()
+	
 		view.presenter = presenter
+		
+		presenter.view = view
+		presenter.interactor = interactor
+	
 		interactor.presenter = presenter
+		view.addTab(UsersRouter.start().navigated(), title: "Users", image: UIImage(systemName: "person.3.sequence.fill"), selectedImage: nil)
+		
+		view.addTab(SignUpRouter.start().navigated(), title: "Sign Up", image: UIImage(systemName: "person.crop.circle.badge.plus"), selectedImage: nil)
 		
 		return view
 	}

@@ -10,7 +10,7 @@ import SnapKit
 
 protocol TabViewProtocol: AnyObject {
 	
-	var presenter: TabPresenterProtocol? { get set }
+	var presenter: TabPresenter? { get set }
 }
 
 protocol TabViewInputs: AnyObject {
@@ -31,7 +31,7 @@ protocol TabViewOutputs: AnyObject {
 // MARK: - View
 final class TabViewController: UITabBarController, TabViewProtocol {
 	
-	var presenter: TabPresenterProtocol?
+	var presenter: TabPresenter?
 
 
 
@@ -49,12 +49,7 @@ final class TabViewController: UITabBarController, TabViewProtocol {
 
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
-	}
-
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		presenter?.viewWillAppear()
-	}
+	}	
 }
 
 // MARK: - Input & Output

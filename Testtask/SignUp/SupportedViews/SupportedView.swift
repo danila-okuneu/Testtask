@@ -36,7 +36,7 @@ class SupportedView: UIView {
 		label.text = "Title"
 		label.adjustsFontSizeToFitWidth = true
 		label.minimumScaleFactor = 0.2
-		label.textColor = .secondary
+		label.textColor = .secondaryTitle
 		label.font = .nunitoSans(ofSize: Constants.titleFontSize)
 		return label
 	}()

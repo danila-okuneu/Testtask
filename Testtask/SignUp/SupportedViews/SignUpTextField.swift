@@ -105,8 +105,8 @@ final class SignUpTextField: SupportedView {
 	
 	func resetAppearance() {
 		UIView.animate(withDuration: 0.3) {
-			self.titleLabel.textColor = .secondary
-			self.supportingLabel.textColor = .secondary
+			self.titleLabel.textColor = .secondaryTitle
+			self.supportingLabel.textColor = .secondaryTitle
 			self.primaryView.layer.borderColor = UIColor.fieldBorderNormal.cgColor
 		}
 		resetSupporting()

@@ -28,6 +28,8 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 	var presenter: SignUpPresenterProtocol?
 	
+	private let imageView = UIImageView()
+	
 	// MARK: - UI Components
 	private let scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
@@ -85,6 +87,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 	
+		uploadView.viewController = self
 		setupViews()
 		let appearance = UINavigationBarAppearance()
 		appearance.backgroundColor = .accent
@@ -101,6 +104,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		navigationItem.title = "Working with POST request"
 		
 		view.backgroundColor = .white
+		uploadView.uploadButton.addTarget(self, action: #selector(showUploadOptions), for: .touchUpInside)
 		
 		view.addSubview(scrollView)
 		scrollView.addSubview(contentStack)
@@ -147,11 +151,58 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 			make.top.equalToSuperview()
 			make.bottom.equalToSuperview()
 		}
-		
-		
 	}
 	
+	@objc private func showUploadOptions() {
+		let alertController = UIAlertController(title: "Choose how you want to add a photo", message: nil, preferredStyle: .actionSheet)
+		
+		let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+			self.openImagePicker(sourceType: .camera)
+		}
+		let galleryAction = UIAlertAction(title: "Gallery", style: .default) { _ in
+			self.openImagePicker(sourceType: .photoLibrary)
+		}
+		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+		
+		alertController.addAction(cameraAction)
+		alertController.addAction(galleryAction)
+		alertController.addAction(cancelAction)
+		
+		present(alertController, animated: true)
+	}
 	
+	private func openImagePicker(sourceType: UIImagePickerController.SourceType) {
+		guard UIImagePickerController.isSourceTypeAvailable(sourceType) else { return }
+		
+		if CameraManager.shared.isAllowed {
+			let picker = UIImagePickerController()
+			picker.sourceType = sourceType
+			picker.allowsEditing = true
+			picker.delegate = self
+			present(picker, animated: true)
+		} else {
+			Task {
+				await CameraManager.shared.requestPermission()
+			}
+		}
+	}
+}
+
+// MARK: - PickerView Delegate
+extension SignUpViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+			if let editedImage = info[.editedImage] as? UIImage {
+				uploadView.loadPhoto(editedImage)
+			} else if let originalImage = info[.originalImage] as? UIImage {
+				uploadView.loadPhoto(originalImage)
+			}
+			picker.dismiss(animated: true)
+		}
+		
+		func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+			picker.dismiss(animated: true)
+		}
 	
 }
 
