@@ -16,14 +16,15 @@ protocol UsersInteractorProtocol: AnyObject {
 
 protocol UsersInteractorInput: AnyObject {
 	
-	func fetchUsers(page: Int) async
+	func fetchUsers() async
 	func fetchNextPage() async
 }
 
 protocol UsersInteractorOutput: AnyObject {
 	
-	func didFetchUsers(_ response: UsersResponse)
+	func didFetchUsers(_ users: [User])
 	func didFailToFetchUsers( error: Error)
+	func didLoadAllPages()
 	
 }
 
@@ -32,7 +33,6 @@ final class UsersInteractor: UsersInteractorProtocol {
 	
 	weak var output: UsersInteractorOutput?
 	var nextUrl: String?
-	var totalPages: Int?
 	
 }
 
@@ -41,23 +41,27 @@ extension UsersInteractor: UsersInteractorInput {
 	func fetchNextPage() async {
 		guard let urlString = nextUrl, let url = URL(string: urlString) else { return }
 		do {
-			print(url)
+			
 			let response = try await NetworkService.shared.fetchUsers(from: url)
+			guard nextUrl != response.links.nextUrl else { return }
+			if response.links.nextUrl == nil {
+				output?.didLoadAllPages()
+			}
 			self.nextUrl = response.links.nextUrl
-			output?.didFetchUsers(response)
+			output?.didFetchUsers(response.users)
 		} catch {
 			output?.didFailToFetchUsers(error: error)
 			
 		}
 	}
 	
-	func fetchUsers(page: Int = 1) async {
+	func fetchUsers() async {
 		do {
-			let response = try await NetworkService.shared.fetchUsers(page: page)
-			self.nextUrl = response.links.nextUrl
-			self.totalPages = response.totalPages
+			let response = try await NetworkService.shared.fetchUsers()
 			
-			output?.didFetchUsers(response)
+			self.nextUrl = response.links.nextUrl
+			output?.didFetchUsers(response.users)
+			
 		} catch {
 			output?.didFailToFetchUsers(error: error)
 

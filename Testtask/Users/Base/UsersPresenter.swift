@@ -8,7 +8,7 @@
 // MARK: - Presenter Protocol
 protocol UsersPresenterProtocol: AnyObject {
 	
-	var view: UsersViewInputs? { get set }
+	var view: UsersViewInput? { get set }
 	var interactor: UsersInteractorInput? { get set }
 	
 }
@@ -16,20 +16,21 @@ protocol UsersPresenterProtocol: AnyObject {
 protocol UsersPresenterInput: AnyObject {
 	
 	func viewWillAppear()
+	
 }
 
 protocol UsersPresenterOutputs: AnyObject {
 	
-	// Define output methods
+	
 }
 
 // MARK: - Presenter
 final class UsersPresenter: UsersPresenterProtocol {
 	
-	weak var view: UsersViewInputs?
+	weak var view: UsersViewInput?
 	var interactor: UsersInteractorInput?
 	
-	init(view: UsersViewInputs?, interactor: UsersInteractorInput?) {
+	init(view: UsersViewInput?, interactor: UsersInteractorInput?) {
 		self.view = view
 		self.interactor = interactor
 	}
@@ -40,7 +41,7 @@ extension UsersPresenter: UsersPresenterInput {
 	
 	func viewWillAppear() {
 		Task {
-			await interactor?.fetchUsers(page: 1)
+			await interactor?.fetchUsers()
 		}
 	}
 }
@@ -48,18 +49,23 @@ extension UsersPresenter: UsersPresenterInput {
 // MARK: - Interactor Output
 extension UsersPresenter: UsersInteractorOutput, UsersViewOutputs {
 	func userDidScrollToEnd() async {
+		print("User Did Scroll to End")
+		view?.activityIsHidden(false)
 		await interactor?.fetchNextPage()
+	}
+	
+	func didLoadAllPages() {
+		print("Did load All pages")
+		view?.didLoadAllPages()
 	}
 	
 	func didFailToFetchUsers(error: any Error) {
 		print("Can't fetch users")
 	}
 	
-	func didFetchUsers(_ response: UsersResponse) {
-		view?.updateUsers(response.users, count: response.totalUsers)
+	
+	func didFetchUsers(_ users: [User]) {
+		view?.activityIsHidden(true)
+		view?.loadUsers(users)
 	}
-	
-	
-	
-	
 }

@@ -13,14 +13,19 @@ protocol UsersViewProtocol: AnyObject {
 	var presenter: UsersPresenter? { get set }
 }
 
-protocol UsersViewInputs: AnyObject {
+protocol UsersViewInput: AnyObject {
 	
-	func updateUsers(_ users: [User], count: Int)
+	func loadUsers(_ users: [User])
+
+	func activityIsHidden(_ bool: Bool)
+	func didLoadAllPages()
+	
 }
 
 protocol UsersViewOutputs: AnyObject {
 	
 	func userDidScrollToEnd() async
+	
 }
 
 // MARK: - View
@@ -30,7 +35,6 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 	var presenter: UsersPresenter?
 	
 	var users: [User] = [ ]
-	var totalUsers: Int = 0
 	var isLoading = true
 	
 	// MARK: - UI Components
@@ -39,9 +43,14 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 		tableView.register(UserViewCell.self, forCellReuseIdentifier: UserViewCell.identifire)
 		tableView.showsVerticalScrollIndicator = false
 		tableView.separatorInset.left = 72
-		tableView.rowHeight = UITableView.automaticDimension
-		tableView.estimatedRowHeight = 200
 		tableView.allowsSelection = false
+		
+		let spinner = UIActivityIndicatorView(style: .medium)
+		spinner.startAnimating()
+		spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
+
+		tableView.tableFooterView = spinner
+		
 		return tableView
 	}()
 	
@@ -74,6 +83,8 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 			make.bottom.equalToSuperview()
 			make.horizontalEdges.equalToSuperview().inset(16)
 		}
+		
+
 	}
 	
 	
@@ -82,56 +93,60 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		isLoading ? 6 : totalUsers
+		users.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = UserViewCell()
+		let cell = tableView.dequeueReusableCell(withIdentifier: UserViewCell.identifire, for: indexPath) as! UserViewCell
 		
-		if isLoading {
-			return cell
-		} else {
-			guard indexPath.row < users.count else {
-				if !isLoading && !users.isEmpty {
-					Task {
-						await presenter?.userDidScrollToEnd()
-					}
-				}
-				return cell
-			}
+		if indexPath.row < users.count {
 			cell.update(with: users[indexPath.row])
-			return cell
+		} else {
+			cell.showSkeletons()
 		}
 		
+		if indexPath.row == users.count - 1 && !isLoading {
+			isLoading = true
+			Task {
+				await presenter?.userDidScrollToEnd()
+				
+			}
+		}
+		return cell
 	}
 }
 
 
 // MARK: - Input & Output
-extension UsersViewController: UsersViewInputs {
+extension UsersViewController: UsersViewInput {
 	
-	func updateUsers(_ users: [User], count: Int) {
-//		isLoading = false
-//		totalUsers = count
-//		
-//		DispatchQueue.main.sync {
-//		
-//			tableView.reloadData()
-//			
-//			for (index, user) in users.enumerated() {
-//				if let cell = tableView.cellForRow(at: IndexPath(row: self.users.count - 1 + index, section: 0)) as? UserViewCell {
-//					cell.update(with: user)
-//				}
-//			}
-//		}
-//		
-//		self.users += users
-//		
-//		
-		
+	func activityIsHidden(_ bool: Bool) {
+		DispatchQueue.main.sync {
+			self.tableView.tableFooterView?.isHidden = bool			
+		}
 	}
 	
+	func loadUsers(_ newUsers: [User]) {
+		let startIndex = users.count
+		let endIndex = startIndex + newUsers.count
+		let indexPaths = (startIndex..<endIndex).map { IndexPath(row: $0, section: 0) }
+		
+		users += newUsers
+		isLoading = false
+		
+		DispatchQueue.main.sync {
+			self.tableView.performBatchUpdates {
+				self.tableView.insertRows(at: indexPaths, with: .automatic)
+			}
+		}
+	}
 	
-	// Extend functionality
+	func didLoadAllPages() {
+		DispatchQueue.main.sync {
+			tableView.tableFooterView = nil
+		}
+	}
+	
+
 }
 

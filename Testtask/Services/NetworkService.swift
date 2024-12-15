@@ -43,7 +43,7 @@ final class NetworkService {
 		}
 	}
 	
-	func fetchUsers(page: Int, count: Int = 6) async throws -> UsersResponse {
+	func fetchUsers(page: Int = 1, count: Int = 6) async throws -> UsersResponse {
 		
 		guard let url = makeURL(to: .fetchUsers(page: page, count: count)) else { throw URLError(.badURL) }
 

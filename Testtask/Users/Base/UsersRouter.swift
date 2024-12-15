@@ -24,7 +24,6 @@ protocol UsersRouterOutputs: AnyObject {
 final class UsersRouter: UsersRouterProtocol, UsersRouterOutputs {
 	var entry: UIViewController?
 	
-	
 	static func start() -> UIViewController {
 		
 		let view = UsersViewController(nibName: nil, bundle: nil)
