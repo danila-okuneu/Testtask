@@ -38,7 +38,9 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 		let tableView = UITableView()
 		tableView.register(UserViewCell.self, forCellReuseIdentifier: UserViewCell.identifire)
 		tableView.showsVerticalScrollIndicator = false
-		tableView.separatorInset = UIEdgeInsets(top: 0, left: 66, bottom: 0, right: 0)
+		tableView.separatorInset.left = 72
+		tableView.rowHeight = UITableView.automaticDimension
+		tableView.estimatedRowHeight = 200
 		tableView.allowsSelection = false
 		return tableView
 	}()
@@ -72,8 +74,6 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 			make.bottom.equalToSuperview()
 			make.horizontalEdges.equalToSuperview().inset(16)
 		}
-		
-		
 	}
 	
 	
@@ -102,6 +102,7 @@ extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 			cell.update(with: users[indexPath.row])
 			return cell
 		}
+		
 	}
 }
 
@@ -110,23 +111,23 @@ extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 extension UsersViewController: UsersViewInputs {
 	
 	func updateUsers(_ users: [User], count: Int) {
-		isLoading = false
-		totalUsers = count
-		
-		DispatchQueue.main.sync {
-		
-			tableView.reloadData()
-			
-			for (index, user) in users.enumerated() {
-				if let cell = tableView.cellForRow(at: IndexPath(row: self.users.count - 1 + index, section: 0)) as? UserViewCell {
-					cell.update(with: user)
-				}
-			}
-		}
-		
-		self.users += users
-		
-		
+//		isLoading = false
+//		totalUsers = count
+//		
+//		DispatchQueue.main.sync {
+//		
+//			tableView.reloadData()
+//			
+//			for (index, user) in users.enumerated() {
+//				if let cell = tableView.cellForRow(at: IndexPath(row: self.users.count - 1 + index, section: 0)) as? UserViewCell {
+//					cell.update(with: user)
+//				}
+//			}
+//		}
+//		
+//		self.users += users
+//		
+//		
 		
 	}
 	

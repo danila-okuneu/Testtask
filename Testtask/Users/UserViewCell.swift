@@ -14,6 +14,7 @@ final class UserViewCell: UITableViewCell {
 	
 	static let identifire = "UserCell"
 	
+	let stackContainer = UIView()
 	
 	private let hStack: UIStackView = {
 		let stack = UIStackView()
@@ -34,6 +35,7 @@ final class UserViewCell: UITableViewCell {
 	
 	private let vStack: UIStackView = {
 		let stack = UIStackView()
+		stack.spacing = 4
 		stack.axis = .vertical
 		return stack
 	}()
@@ -44,7 +46,6 @@ final class UserViewCell: UITableViewCell {
 		label.font = .nunitoSans(ofSize: 18)
 		label.text = "Danila Okunev"
 		label.numberOfLines = 0
-		label.isSkeletonable = true
 		return label
 	}()
 	
@@ -53,7 +54,6 @@ final class UserViewCell: UITableViewCell {
 		label.textColor = .secondaryText
 		label.text = "Junior iOS developer"
 		label.font = .nunitoSans(ofSize: 14)
-		label.isSkeletonable = true
 		return label
 	}()
 	
@@ -63,7 +63,6 @@ final class UserViewCell: UITableViewCell {
 		label.font = .nunitoSans(ofSize: 14)
 		label.numberOfLines = 2
 		label.text = "danila_okuneu@gmail.com"
-		label.isSkeletonable = true
 		return label
 	}()
 	
@@ -73,7 +72,6 @@ final class UserViewCell: UITableViewCell {
 		label.font = .nunitoSans(ofSize: 14)
 		label.numberOfLines = 2
 		label.text = "+375 (25) 727-07-03"
-		label.isSkeletonable = true
 		return label
 	}()
 	
@@ -81,8 +79,10 @@ final class UserViewCell: UITableViewCell {
 	init() {
 		super.init(style: .default, reuseIdentifier: nil)
 		
-		
 		setupViews()
+		setupTextSkeletons()
+		self.layoutIfNeeded()
+		showTextSkeletons()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -92,8 +92,11 @@ final class UserViewCell: UITableViewCell {
 	// MARK: - Layout
 	private func setupViews() {
 		
-		contentView.addSubview(hStack)
 		
+		stackContainer.addSubview(hStack)
+		
+		contentView.addSubview(stackContainer)
+
 		let imageContainer = UIView()
 		imageContainer.addSubview(photoImageView)
 		
@@ -113,8 +116,13 @@ final class UserViewCell: UITableViewCell {
 	
 	private func setupConstraints() {
 		
+		stackContainer.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+		}
+		
+		
 		hStack.snp.makeConstraints { make in
-			make.verticalEdges.equalToSuperview().inset(24)
+			make.verticalEdges.equalToSuperview().inset(24).priority(999)
 			make.horizontalEdges.equalToSuperview()
 		}
 		
@@ -135,6 +143,25 @@ final class UserViewCell: UITableViewCell {
 		photoImageView.kf.setImage(with: url)
 	}
 	
+	private func setupTextSkeletons() {
+		[nameLabel, positionLabel, emailLabel, phoneLabel].forEach { label in
+			label.isSkeletonable = true
+			
+			label.skeletonTextNumberOfLines = 1
+			
+			let randomOffset = CGFloat((0...100).randomElement()!)
+			label.skeletonPaddingInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: randomOffset)
+		}
+	}
+	
+	func showTextSkeletons() {
+	
+		[nameLabel, positionLabel, emailLabel, phoneLabel].forEach { label in
+			label.showAnimatedGradientSkeleton()
+		}
+		
+		
+	}
 	
 }
 
