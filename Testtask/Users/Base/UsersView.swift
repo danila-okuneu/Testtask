@@ -62,6 +62,9 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		users = [ ]
+		isLoading = true
+		tableView.reloadData()
 		presenter?.viewWillAppear()
 	}
 	

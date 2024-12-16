@@ -101,6 +101,22 @@ class SupportedView: UIView {
 	}
 	
 	// MARK: - Methods
+	func showActiveAppearance() {
+		UIView.animate(withDuration: 0.3) {
+			self.titleLabel.textColor = .fieldTintNormal
+			self.supportingLabel.textColor = .fieldHint
+			self.primaryView.layer.borderColor = UIColor.fieldActive.cgColor
+		}
+		resetSupporting()
+	}
+	
+	func resetSupporting() {
+		if supportingLabel.text != supporting {
+			UIView.transition(with: supportingLabel, duration: 0.1, options: .transitionCrossDissolve) {
+				self.supportingLabel.text = self.supporting
+			}
+		}
+	}
 	
 }
 

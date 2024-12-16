@@ -12,12 +12,16 @@ final class SignUpTextField: SupportedView {
 	
 	
 	let type: TextFieldType
+	var validationHandler: ((String) -> String?)?
+	var text: String { textField.text ?? "" }
 	
 	private let textField: UITextField = {
 		let field = UITextField()
 		field.textColor = .primaryText
 		return field
 	}()
+	
+	
 	
 	// MARK: - Initializers
 	init(placeholder: String, supporting: String = "", ofType type: TextFieldType) {
@@ -94,14 +98,7 @@ final class SignUpTextField: SupportedView {
 		}
 	}
 	
-	func showActiveAppearance() {
-		UIView.animate(withDuration: 0.3) {
-			self.titleLabel.textColor = .fieldTintNormal
-			self.supportingLabel.textColor = .fieldHint
-			self.primaryView.layer.borderColor = UIColor.fieldActive.cgColor
-		}
-		resetSupporting()
-	}
+
 	
 	func resetAppearance() {
 		UIView.animate(withDuration: 0.3) {
@@ -112,30 +109,25 @@ final class SignUpTextField: SupportedView {
 		resetSupporting()
 	}
 	
-	private func resetSupporting() {
-		if supportingLabel.text != supporting {
-			UIView.transition(with: supportingLabel, duration: 0.1, options: .transitionCrossDissolve) {
-				self.supportingLabel.text = self.supporting
-			}
-		}
-	}
+	
 	
 	private func configure() {
 		switch type {
 		case .name:
 			textField.textContentType = .name
 			textField.autocapitalizationType = .words
+			validationHandler = ValidationRules.validateName(_:)
 		case .email:
 			textField.textContentType = .emailAddress
 			textField.keyboardType = .emailAddress
 			textField.autocorrectionType = .no
 			textField.autocapitalizationType = .none
+			validationHandler = ValidationRules.validateEmail(_:)
 		case .phone:
 			textField.keyboardType = .phonePad
 			textField.textContentType = .telephoneNumber
+			validationHandler = ValidationRules.validateNumber(_:)
 		}
-		
-		
 	}
 	
 	@objc private func gestureTarget() {
@@ -176,41 +168,18 @@ extension SignUpTextField: UITextFieldDelegate {
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
 		
-		if textField.text!.isEmpty {
+		guard let text = textField.text, !text.isEmpty else {
 			resetPlaceholder()
-		}
-		
-		if textField.text!.isEmpty {
 			showError(with: "Required field")
 			return
-			
 		}
-		
-		switch type {
-		case .name:
-			
-			
-			if textField.text?.count ?? 0 < 2 {
-				showError(with: "Name must have at least 2 letters")
-				return
-			}
-			if textField.text?.count ?? 0 > 60 {
-				showError(with: "Name must have maximum 60 letters")
-				return
-			}
-			
-		case .email:
-			if textField.text?.count(where: { $0 == "@"} ) ?? 0 != 1 {
-				showError(with: "Invalid email format")
-				return
-			}
-			
-		case .phone:
+
+		if let validationHandler, let description = validationHandler(text) {
+			showError(with: description)
 			return
 		}
 		
 		resetAppearance()
-		
 	}
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {

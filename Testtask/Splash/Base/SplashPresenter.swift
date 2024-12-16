@@ -44,6 +44,7 @@ final class SplashPresenter: SplashPresenterProtocol {
 extension SplashPresenter: SplashPresenterInputs, SplashPresenterOutputs {
 	
 	func endLoading() {
+	
 		changeController()
 	}
 	
@@ -52,15 +53,12 @@ extension SplashPresenter: SplashPresenterInputs, SplashPresenterOutputs {
 		if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
 			guard let window = scene.windows.first else { return }
 			
-			
-			let controller = TabRouter.start()
-			
-			
-			
-			window.rootViewController = controller
-	
-			
-			
+			NetworkMonitor.shared.checkConnection { isConnected in
+				if isConnected {
+					let controller = TabRouter.start()
+					window.rootViewController = controller
+				}
+			}
 		}
 		
 		

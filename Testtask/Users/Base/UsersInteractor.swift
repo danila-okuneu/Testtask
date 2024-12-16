@@ -42,7 +42,7 @@ extension UsersInteractor: UsersInteractorInput {
 		guard let urlString = nextUrl, let url = URL(string: urlString) else { return }
 		do {
 			
-			let response = try await NetworkService.shared.fetchUsers(from: url)
+			let response = try await NetworkManager.shared.fetchUsers(from: url)
 			guard nextUrl != response.links.nextUrl else { return }
 			if response.links.nextUrl == nil {
 				output?.didLoadAllPages()
@@ -57,7 +57,7 @@ extension UsersInteractor: UsersInteractorInput {
 	
 	func fetchUsers() async {
 		do {
-			let response = try await NetworkService.shared.fetchUsers()
+			let response = try await NetworkManager.shared.fetchUsers()
 			
 			self.nextUrl = response.links.nextUrl
 			output?.didFetchUsers(response.users)

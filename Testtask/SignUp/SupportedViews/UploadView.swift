@@ -14,8 +14,7 @@ final class UploadView: SupportedView {
 	var viewController: UIViewController?
 	
 	// MARK: - UI Components
-	
-	private let photoImageView: UIImageView = {
+	let photoImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.backgroundColor = .fieldBorderNormal
 		imageView.isHidden = true

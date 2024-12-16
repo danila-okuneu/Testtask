@@ -96,6 +96,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 24)]
 	}
 	
+		
 	// MARK: - Layout
 	private func setupViews() {
 		
@@ -105,6 +106,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 		view.backgroundColor = .white
 		uploadView.uploadButton.addTarget(self, action: #selector(showUploadOptions), for: .touchUpInside)
+		signUpButton.addTarget(self, action: #selector(registerUser), for: .touchUpInside)
 		
 		view.addSubview(scrollView)
 		scrollView.addSubview(contentStack)
@@ -123,6 +125,8 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		buttonContainer.addSubview(signUpButton)
 		
 		contentStack.addArrangedSubview(buttonContainer)
+		
+		contentStack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideKeyboard)))
 		
 	
 		setupConstraints()
@@ -183,6 +187,43 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		} else {
 			Task {
 				await CameraManager.shared.requestPermission()
+			}
+		}
+	}
+	
+	@objc private func hideKeyboard() {
+	
+		self.view.endEditing(true)
+		
+	}
+	
+	@objc private func registerUser() {
+		
+		Task {
+			do {
+				
+				guard let photoData = uploadView.photoImageView.image?.jpegData(compressionQuality: 0.8) else { return }
+				
+				let request = RegisterUserRequest(
+					name: nameTextField.text,
+					email: emailTextField.text,
+					phone: phoneTextField.text,
+					positionId: 1,
+					photo: photoData
+				)
+				
+				
+				let token = try await NetworkManager.shared.fetchToken()
+				print(token)
+				try await NetworkManager.shared.registerUser(userRequest: request, token: token)
+				let vc = SignUpResultViewController(true)
+				vc.modalPresentationStyle = .fullScreen
+				self.present(vc, animated: true)
+				
+			} catch {
+				let vc = SignUpResultViewController(false, message: error.localizedDescription)
+				vc.modalPresentationStyle = .fullScreen
+				self.present(vc, animated: true)
 			}
 		}
 	}

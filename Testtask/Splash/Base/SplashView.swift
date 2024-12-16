@@ -57,8 +57,6 @@ final class SplashViewController: UIViewController, SplashViewProtocol {
 	
 	private func setupConstraints() {
 		
-		
-		
 		logoImageView.snp.makeConstraints { make in
 			make.center.equalToSuperview()
 			make.width.equalToSuperview().multipliedBy(0.444444)
