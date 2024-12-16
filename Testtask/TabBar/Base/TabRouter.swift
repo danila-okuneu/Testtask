@@ -11,40 +11,19 @@ import UIKit
 protocol TabRouterProtocol: AnyObject {
 	
 	var entry: UIViewController? { get }
-		
-}
-
-protocol TabRouterOutputs: AnyObject {
-	
-	static func start() -> UIViewController
-	
 }
 
 // MARK: - Router
-final class TabRouter: TabRouterProtocol, TabRouterOutputs {
+final class TabRouter: TabRouterProtocol {
 	var entry: UIViewController?
 	
-	
 	static func start() -> UIViewController {
-		
 		let view = TabViewController()
-		let interactor = TabInteractor()
 		let presenter = TabPresenter()
-	
+		
 		view.presenter = presenter
-		
 		presenter.view = view
-		presenter.interactor = interactor
-	
-		interactor.presenter = presenter
-		view.addTab(UsersRouter.start().navigated(), title: "Users", image: UIImage(systemName: "person.3.sequence.fill"), selectedImage: nil)
-		
-		view.addTab(SignUpRouter.start().navigated(), title: "Sign Up", image: UIImage(systemName: "person.crop.circle.badge.plus"), selectedImage: nil)
-		
 		return view
 	}
-	
-	
-	
 }
 

@@ -32,7 +32,7 @@ final class SignUpRouter: SignUpRouterProtocol, SignUpRouterOutputs {
 		let presenter = SignUpPresenter(view: view, interactor: interactor)
 		
 		view.presenter = presenter
-		interactor.presenter = presenter
+		interactor.output = presenter
 		
 		return view
 	}

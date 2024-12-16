@@ -10,9 +10,9 @@ import SnapKit
 
 class SupportedView: UIView {
 	
-	var isValid = false
 	let supporting: String
 	
+	// MARK: - UI Components
 	let primaryView: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
@@ -50,10 +50,7 @@ class SupportedView: UIView {
 		titleLabel.text = title
 		supportingLabel.text = supporting
 		
-		
 		setupViews()
-		
-
 	}
 	
 	@available(*, unavailable)
@@ -74,7 +71,6 @@ class SupportedView: UIView {
 		
 		addSubview(primaryView)
 		addSubview(supportingLabel)
-		
 		addSubview(titleLabel)
 		
 		setupConstraints()
@@ -103,7 +99,6 @@ class SupportedView: UIView {
 	// MARK: - Methods
 	
 	func showError(with description: String?) {
-		isValid = false
 		UIView.animate(withDuration: 0.3) {
 			self.titleLabel.textColor = .fieldWrong
 			self.supportingLabel.textColor = .fieldWrong
@@ -116,8 +111,7 @@ class SupportedView: UIView {
 	
 
 	
-	func resetAppearance() {
-		isValid = true
+	func setNormalAppearance() {
 		UIView.animate(withDuration: 0.3) {
 			self.titleLabel.textColor = .secondaryTitle
 			self.supportingLabel.textColor = .secondaryTitle
@@ -129,7 +123,6 @@ class SupportedView: UIView {
 	
 	
 	func resetSupporting() {
-		isValid = false
 		if supportingLabel.text != supporting {
 			UIView.transition(with: supportingLabel, duration: 0.1, options: .transitionCrossDissolve) {
 				self.supportingLabel.text = self.supporting

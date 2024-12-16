@@ -15,6 +15,8 @@ protocol TabViewProtocol: AnyObject {
 
 protocol TabViewInputs: AnyObject {
 	
+	func setupTabBar()
+	
 	func addTab(
 		_ viewController: UIViewController,
 		title: String,
@@ -23,20 +25,32 @@ protocol TabViewInputs: AnyObject {
 	)
 }
 
-protocol TabViewOutputs: AnyObject {
-
-	// Define output methods
-}
-
 // MARK: - View
 final class TabViewController: UITabBarController, TabViewProtocol {
 	
 	var presenter: TabPresenter?
-
-
-
+	
+	
+	
 	init() {
 		super.init(nibName: nil, bundle: nil)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		presenter?.viewWillAppear()
+	}
+}
+
+// MARK: - Input
+extension TabViewController: TabViewInputs {
+	
+	
+	func setupTabBar() {
 		
 		tabBar.backgroundImage = UIImage()
 		tabBar.shadowImage = UIImage()
@@ -46,14 +60,7 @@ final class TabViewController: UITabBarController, TabViewProtocol {
 		tabBar.backgroundColor = .tabBarBackground
 		tabBar.barTintColor = .tabBarBackground
 	}
-
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}	
-}
-
-// MARK: - Input & Output
-extension TabViewController: TabViewInputs {
+	
 	
 	func addTab(
 		_ viewController: UIViewController,
@@ -61,8 +68,6 @@ extension TabViewController: TabViewInputs {
 		image: UIImage?,
 		selectedImage: UIImage? = nil
 	) {
-		
-		
 		viewController.tabBarItem.title = title
 		viewController.tabBarItem.image = image
 		viewController.tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 14)], for: .normal)
@@ -73,8 +78,6 @@ extension TabViewController: TabViewInputs {
 		} else {
 			viewControllers = [viewController]
 		}
-		
-	
 	}
 	
 }

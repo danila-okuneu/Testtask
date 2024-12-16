@@ -42,6 +42,24 @@ final class RoundedButton: UIButton {
 	}
 	
 	
+	func disable() {
+		backgroundColor = .fieldHint
+		isUserInteractionEnabled = false
+	}
+	
+	func enable() {
+		backgroundColor = .accent
+		isUserInteractionEnabled = true
+	}
+	
+	func didTapped() {
+		
+		backgroundColor = .orange
+		UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+			self.backgroundColor = .accent
+		}
+		
+	}
 }
 
 

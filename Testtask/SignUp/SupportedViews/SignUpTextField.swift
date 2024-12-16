@@ -10,11 +10,11 @@ import UIKit
 
 final class SignUpTextField: SupportedView {
 	
+	let type: TextFieldType
 	var delegate: SignUpTextFieldDelegate?
 	
-	
-	var validationHandler: ((String) -> String?)?
 	var text: String { textField.text ?? "" }
+	
 	
 	private let textField: UITextField = {
 		let field = UITextField()
@@ -25,6 +25,7 @@ final class SignUpTextField: SupportedView {
 	
 	// MARK: - Initializers
 	init(placeholder: String, supporting: String = "", ofType type: TextFieldType) {
+		self.type = type
 		super.init(title: placeholder, supporting: supporting)
 		
 		setupViews()
@@ -62,10 +63,8 @@ final class SignUpTextField: SupportedView {
 	
 	private func setupGesture() {
 		
-		let gesture = UITapGestureRecognizer(target: self, action: #selector(gestureTarget))
-		
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(startEditing))
 		primaryView.addGestureRecognizer(gesture)
-		
 	}
 
 	// MARK: - Methods
@@ -81,6 +80,7 @@ final class SignUpTextField: SupportedView {
 	}
 	
 	func resetPlaceholder() {
+		guard textField.text!.isEmpty else { return }
 		UIView.animate(withDuration: 0.3) {
 			self.titleLabel.transform = .identity
 		}
@@ -95,28 +95,23 @@ final class SignUpTextField: SupportedView {
 		resetSupporting()
 	}
 	
-	
-	
 	private func configure(with type: TextFieldType) {
 		switch type {
 		case .name:
 			textField.textContentType = .name
 			textField.autocapitalizationType = .words
-			validationHandler = ValidationRules.validateName(_:)
 		case .email:
 			textField.textContentType = .emailAddress
 			textField.keyboardType = .emailAddress
 			textField.autocorrectionType = .no
 			textField.autocapitalizationType = .none
-			validationHandler = ValidationRules.validateEmail(_:)
-		case .phone:
+		default:
 			textField.keyboardType = .phonePad
 			textField.textContentType = .telephoneNumber
-			validationHandler = ValidationRules.validateNumber(_:)
 		}
 	}
 	
-	@objc private func gestureTarget() {
+	@objc private func startEditing() {
 		textField.becomeFirstResponder()
 	}
 	
@@ -153,19 +148,7 @@ extension SignUpTextField: UITextFieldDelegate {
 	}
 	
 	func textFieldDidEndEditing(_ textField: UITextField) {
-		
-		guard let text = textField.text, !text.isEmpty else {
-			resetPlaceholder()
-			showError(with: "Required field")
-			return
-		}
-
-		if let validationHandler, let description = validationHandler(text) {
-			showError(with: description)
-			return
-		}
-		
-		resetAppearance()
+		delegate?.didEndEditing(self)
 	}
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -178,11 +161,13 @@ enum TextFieldType {
 	case name
 	case email
 	case phone
+	case photo
 }
-
 
 protocol SignUpTextFieldDelegate {
 	
-	func didEndEditing()
+	func didEndEditing(_ sender: SignUpTextField)
 	
 }
+
+

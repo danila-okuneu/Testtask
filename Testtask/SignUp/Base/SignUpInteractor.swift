@@ -5,41 +5,60 @@
 //  Created by Danila Okuneu on 12.12.24.
 //
 
+import UIKit
+
 // MARK: - Interactor Protocol
 protocol SignUpInteractorProtocol: AnyObject {
 	
-	var presenter: SignUpInteractorOutput? { get set }
+	var output: SignUpInteractorOutput? { get set }
 	
 }
 
 protocol SignUpInteractorInput: AnyObject {
 	
-	func fetchPositions() async throws
+	func registerUser(_ request: RegisterUserRequest) async
+	func fetchPositions() async
 }
 
 protocol SignUpInteractorOutput: AnyObject {
 	
 	func didFetchPositions(_ positions: [Position])
 	func didFailureToFetchPositions(_ message: String)
+	
+	func didRegisterUser()
+	func didFailureToRegisterUser(_ message: String)
 }
 
 // MARK: - Interactor
 final class SignUpInteractor: SignUpInteractorProtocol {
 	
-	weak var presenter: SignUpInteractorOutput?
+	weak var output: SignUpInteractorOutput?
 	
 }
 
-// MARK: - Input & Output
+// MARK: - Interactor Input
 extension SignUpInteractor: SignUpInteractorInput {
+
+	func registerUser(_ request: RegisterUserRequest) async {
+		
+		do {
+			let token = try await NetworkManager.shared.fetchToken()
+			try await NetworkManager.shared.registerUser(userRequest: request, token: token)
+			output?.didRegisterUser()
+			
+		} catch {
+			output?.didFailureToRegisterUser(error.localizedDescription)
+		}
+	}
+	
 	
 	func fetchPositions() async {
 		
 		do {
 			let response = try await NetworkManager.shared.fetchPositions()
-			presenter?.didFetchPositions(response.positions)
+			output?.didFetchPositions(response.positions)
 		} catch {
-			presenter?.didFailureToFetchPositions(error.localizedDescription)
+			output?.didFailureToFetchPositions(error.localizedDescription)
 		}
 	}
 }

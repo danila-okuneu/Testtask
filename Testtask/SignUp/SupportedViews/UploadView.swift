@@ -11,6 +11,8 @@ import SnapKit
 final class UploadView: SupportedView {
 	
 	
+	var delegate: UploadViewDelegate?
+	
 	var viewController: UIViewController?
 	
 	// MARK: - UI Components
@@ -92,10 +94,13 @@ final class UploadView: SupportedView {
 	}
 	
 	@objc private func removePhoto() {
+		
 		photoImageView.image = nil
 		photoImageView.isHidden = true
 		removeButton.isHidden = true
 		titleLabel.isHidden = false
+		delegate?.didRemovePhoto()
+		showError(with: "Required field")
 		
 		
 	}
@@ -115,3 +120,8 @@ extension UploadView {
 	}
 }
 
+
+protocol UploadViewDelegate {
+	
+	func didRemovePhoto()
+}
