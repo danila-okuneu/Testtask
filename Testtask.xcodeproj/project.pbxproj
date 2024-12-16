@@ -21,6 +21,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Untitled.swift,
 			);
 			target = F1C066BB2D0AE939001514EA /* Testtask */;
 		};

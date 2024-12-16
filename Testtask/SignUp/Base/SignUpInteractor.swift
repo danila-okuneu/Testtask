@@ -8,31 +8,40 @@
 // MARK: - Interactor Protocol
 protocol SignUpInteractorProtocol: AnyObject {
 	
-	var presenter: SignUpPresenterProtocol? { get set }
+	var presenter: SignUpInteractorOutput? { get set }
 	
 }
 
-protocol SignUpInteractorInputs: AnyObject {
+protocol SignUpInteractorInput: AnyObject {
 	
-	// Define input methods
+	func fetchPositions() async throws
 }
 
-protocol SignUpInteractorOutputs: AnyObject {
+protocol SignUpInteractorOutput: AnyObject {
 	
-	// Define output methods
+	func didFetchPositions(_ positions: [Position])
+	func didFailureToFetchPositions(_ message: String)
 }
 
 // MARK: - Interactor
 final class SignUpInteractor: SignUpInteractorProtocol {
 	
-	weak var presenter: SignUpPresenterProtocol?
+	weak var presenter: SignUpInteractorOutput?
 	
 }
 
 // MARK: - Input & Output
-extension SignUpInteractor: SignUpInteractorInputs, SignUpInteractorOutputs {
+extension SignUpInteractor: SignUpInteractorInput {
 	
-	// Extend functionality
+	func fetchPositions() async {
+		
+		do {
+			let response = try await NetworkManager.shared.fetchPositions()
+			presenter?.didFetchPositions(response.positions)
+		} catch {
+			presenter?.didFailureToFetchPositions(error.localizedDescription)
+		}
+	}
 }
 
 

@@ -5,17 +5,19 @@
 //  Created by Danila Okuneu on 12.12.24.
 //
 
+import Dispatch
+
 // MARK: - Presenter Protocol
 protocol SignUpPresenterProtocol: AnyObject {
 	
-	var view: SignUpViewProtocol? { get set }
-	var interactor: SignUpInteractorProtocol? {get set }
+	var view: SignUpViewController? { get set }
+	var interactor: SignUpInteractor? {get set }
 	
 }
 
 protocol SignUpPresenterInputs: AnyObject {
 	
-	// Define input methods
+	func viewWillAppear()
 }
 
 protocol SignUpPresenterOutputs: AnyObject {
@@ -26,18 +28,44 @@ protocol SignUpPresenterOutputs: AnyObject {
 // MARK: - Presenter
 final class SignUpPresenter: SignUpPresenterProtocol {
 	
-	weak var view: SignUpViewProtocol?
-	var interactor: SignUpInteractorProtocol?
+	weak var view: SignUpViewController?
+	var interactor: SignUpInteractor?
 	
-	init(view: SignUpViewProtocol?, interactor: SignUpInteractorProtocol?) {
+	init(view: SignUpViewController?, interactor: SignUpInteractor?) {
 		self.view = view
 		self.interactor = interactor
 	}
 }
 
-// MARK: - Input & Output
-extension SignUpPresenter: SignUpPresenterInputs, SignUpPresenterOutputs {
+// MARK: - Input
+extension SignUpPresenter: SignUpPresenterInputs {
 	
-	// Extend functionality
+	func viewWillAppear() {
+		Task {
+			await interactor?.fetchPositions()
+		}
+	}
+	
+	
+	
 }
 
+
+// MARK: - Output
+extension SignUpPresenter: SignUpInteractorOutput {
+	
+	func didFetchPositions(_ positions: [Position]) {
+		view?.loadPositions(positions)
+	}
+	
+	func didFailureToFetchPositions(_ message: String = "Failure to fetch positions") {
+		print("Failure")
+		DispatchQueue.main.sync {
+			view?.showErrorAlert(message: message)
+		}
+	}
+	
+	
+	
+	
+}

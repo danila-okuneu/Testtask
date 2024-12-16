@@ -65,13 +65,13 @@ final class RadioButton: UIButton {
 	}
 	
 	// MARK: - Methods
-	func select() {
+	func selectedAppearance() {
 		
 		circleView.layer.borderColor = UIColor.appCyan.cgColor
 		circleView.backgroundColor = .appCyan
 	}
 	
-	func reset() {
+	func resetAppearance() {
 		
 		UIView.transition(with: circleView, duration: 0.1, options: [.transitionCrossDissolve, .curveEaseOut]) {
 			self.circleView.layer.borderColor = UIColor.fieldBorderNormal.cgColor

@@ -10,15 +10,15 @@ import SnapKit
 
 protocol SignUpViewProtocol: AnyObject {
 	
-	var presenter: SignUpPresenterProtocol? { get set }
+	var presenter: SignUpPresenter? { get set }
 }
 
-protocol SignUpViewInputs: AnyObject {
+protocol SignUpViewInput: AnyObject {
 	
-	// Define input methods
+	func loadPositions(_ positions: [Position])
 }
 
-protocol SignUpViewOutputs: AnyObject {
+protocol SignUpViewOutput: AnyObject {
 	
 	// Define output methods
 }
@@ -26,11 +26,14 @@ protocol SignUpViewOutputs: AnyObject {
 // MARK: - View
 final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
-	var presenter: SignUpPresenterProtocol?
+	var presenter: SignUpPresenter?
 	
-	private let imageView = UIImageView()
+	private var isLoading = true
+	private var positions: [Position] = [ ]
+	private var selectedIndexPath = IndexPath(row: 0, section: 0)
 	
 	// MARK: - UI Components
+	private let imageView = UIImageView()
 	private let scrollView: UIScrollView = {
 		let scrollView = UIScrollView()
 		scrollView.alwaysBounceVertical = true
@@ -72,12 +75,14 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		return label
 	}()
 	
-	private let positionsList = PositionsList(
-		positions: "Frontend developer",
-		"Backend developer",
-		"Designer",
-		"QA"
-	)
+	private let positionsTableView: UITableView = {
+		let tableView = UITableView()
+		tableView.separatorStyle = .none
+		tableView.isScrollEnabled = false
+		tableView.selectionFollowsFocus = true
+		tableView.register(PositionViewCell.self, forCellReuseIdentifier: PositionViewCell.identifire)
+		return tableView
+	}()
 	
 	private let uploadView = UploadView()
 	
@@ -96,13 +101,25 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 24)]
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		presenter?.viewWillAppear()
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		positions = [ ]
+		selectedIndexPath = IndexPath(row: 0, section: 0)
+	}
 		
 	// MARK: - Layout
 	private func setupViews() {
 		
-		
-		
 		navigationItem.title = "Working with POST request"
+		
+		positionsTableView.delegate = self
+		positionsTableView.dataSource = self
 		
 		view.backgroundColor = .white
 		uploadView.uploadButton.addTarget(self, action: #selector(showUploadOptions), for: .touchUpInside)
@@ -118,15 +135,19 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		fieldsStackView.addArrangedSubview(phoneTextField)
 		
 		contentStack.addArrangedSubview(selectTitle)
-		contentStack.addArrangedSubview(positionsList)
+		contentStack.addArrangedSubview(positionsTableView)
 		contentStack.addArrangedSubview(uploadView)
+		
+		nameTextField.delegate = self
 		
 		let buttonContainer = UIView()
 		buttonContainer.addSubview(signUpButton)
 		
 		contentStack.addArrangedSubview(buttonContainer)
 		
-		contentStack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideKeyboard)))
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+		gesture.cancelsTouchesInView = false
+		contentStack.addGestureRecognizer(gesture)
 		
 	
 		setupConstraints()
@@ -142,7 +163,6 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	}
 	
 	private func setupScrollView() {
-		
 		
 		scrollView.snp.makeConstraints { make in
 			make.top.equalTo(view.safeAreaLayoutGuide)
@@ -192,23 +212,20 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	}
 	
 	@objc private func hideKeyboard() {
-	
 		self.view.endEditing(true)
-		
 	}
 	
 	@objc private func registerUser() {
 		
 		Task {
 			do {
-				
 				guard let photoData = uploadView.photoImageView.image?.jpegData(compressionQuality: 0.8) else { return }
 				
 				let request = RegisterUserRequest(
 					name: nameTextField.text,
 					email: emailTextField.text,
 					phone: phoneTextField.text,
-					positionId: 1,
+					positionId: selectedIndexPath.row + 1,
 					photo: photoData
 				)
 				
@@ -247,6 +264,60 @@ extension SignUpViewController: UIImagePickerControllerDelegate, UINavigationCon
 	
 }
 
+// MARK: - TableView Delegate & DataSource
+extension SignUpViewController: UITableViewDelegate, UITableViewDataSource {
+	
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		isLoading ? 4 : positions.count
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: PositionViewCell.identifire, for: indexPath) as! PositionViewCell
+		
+		
+		if !isLoading {
+			cell.configure(with: positions[indexPath.row])
+		}
+		
+		return cell
+	}
+	
+
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	
+		guard let selectedCell = tableView.cellForRow(at: selectedIndexPath) as? PositionViewCell else { return }
+		selectedCell.button.resetAppearance()
+		
+		selectedIndexPath = indexPath
+		
+		guard let cell = tableView.cellForRow(at: indexPath) as? PositionViewCell else { return }
+		cell.button.selectedAppearance()
+		
+	}
+	
+	
+	
+	
+}
+
+extension SignUpViewController: SignUpTextFieldDelegate {
+	
+	
+	func didEndEditing() {
+		<#code#>
+	}
+	
+	
+	
+	
+		
+	
+	
+	
+}
+
+
 // MARK: - Constants
 extension SignUpViewController {
 	
@@ -264,9 +335,26 @@ extension SignUpViewController {
 }
 
 // MARK: - Input & Output
-extension SignUpViewController: SignUpViewInputs, SignUpViewOutputs {
+extension SignUpViewController: SignUpViewInput, SignUpViewOutput {
+	func loadPositions(_ positions: [Position]) {
+		print("Loaded")
+		self.positions = positions
+		isLoading = false
+		DispatchQueue.main.sync {
+			self.positionsTableView.reloadData()
+			self.positionsTableView.layoutIfNeeded()
+			self.positionsTableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+			
+			guard let cell = positionsTableView.cellForRow(at: selectedIndexPath) as? PositionViewCell else { return }
+			cell.select()
+			
+			self.positionsTableView.snp.updateConstraints { make in
+				make.height.equalTo(self.positionsTableView.contentSize.height + 10)
+			}
+		}
+	}
 	
-	// Extend functionality
+	
 }
 
 

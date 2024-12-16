@@ -103,25 +103,19 @@ final class NetworkManager {
 	}
 	
 	func fetchUsers(page: Int = 1, count: Int = 6) async throws -> UsersResponse {
-		
 		guard let url = makeURL(to: .users(page: page, count: count)) else { throw NetworkError.invalidURL }
-
 		let (data, response) = try await session.data(from: url)
-		print(String(data: data, encoding: .utf8))
 		guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.cannotParseResponse) }
-		
 		switch httpResponse.statusCode {
 		case 200...299:
 			let decoder = JSONDecoder()
 			decoder.keyDecodingStrategy = .convertFromSnakeCase
-			
 			let users = try decoder.decode(UsersResponse.self, from: data)
 			return users
 		default:
 			if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
 				throw NetworkError.dataResponseError(errorResponse.message)
 			}
-			
 			throw NetworkError.badServerResponse(statusCode: httpResponse.statusCode)
 		}
 	}
@@ -138,6 +132,27 @@ final class NetworkManager {
 		default:
 			throw NetworkError.badServerResponse(statusCode: httpResponse.statusCode)
 		}
+	}
+	
+	func fetchPositions() async throws -> PositionResponse {
+		guard let url = makeURL(to: .positions) else { throw NetworkError.invalidURL }
+		print(url)
+		let (data, response) = try await session.data(from: url)
+		guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.cannotParseResponse) }
+		switch httpResponse.statusCode {
+		case 200...299:
+			let decoder = JSONDecoder()
+			decoder.keyDecodingStrategy = .convertFromSnakeCase
+			let positions = try decoder.decode(PositionResponse.self, from: data)
+			return positions
+		default:
+			if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+				throw NetworkError.dataResponseError(errorResponse.message)
+			}
+			throw NetworkError.badServerResponse(statusCode: httpResponse.statusCode)
+		}
+		
+		
 	}
 	
 	
@@ -248,4 +263,15 @@ enum NetworkError: Error, LocalizedError {
 			return string
 		}
 	}
+}
+
+struct PositionResponse: Decodable {
+	let success: Bool
+	let positions: [Position]
+	
+}
+
+struct Position: Decodable {
+	let id: Int
+	let name: String
 }

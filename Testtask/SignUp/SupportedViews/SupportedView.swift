@@ -10,7 +10,7 @@ import SnapKit
 
 class SupportedView: UIView {
 	
-	
+	var isValid = false
 	let supporting: String
 	
 	let primaryView: UIView = {
@@ -101,16 +101,35 @@ class SupportedView: UIView {
 	}
 	
 	// MARK: - Methods
-	func showActiveAppearance() {
+	
+	func showError(with description: String?) {
+		isValid = false
 		UIView.animate(withDuration: 0.3) {
-			self.titleLabel.textColor = .fieldTintNormal
-			self.supportingLabel.textColor = .fieldHint
-			self.primaryView.layer.borderColor = UIColor.fieldActive.cgColor
+			self.titleLabel.textColor = .fieldWrong
+			self.supportingLabel.textColor = .fieldWrong
+			self.primaryView.layer.borderColor = UIColor.fieldWrong.cgColor
+		}
+		if let description {
+			supportingLabel.text = description
+		}
+	}
+	
+
+	
+	func resetAppearance() {
+		isValid = true
+		UIView.animate(withDuration: 0.3) {
+			self.titleLabel.textColor = .secondaryTitle
+			self.supportingLabel.textColor = .secondaryTitle
+			self.primaryView.layer.borderColor = UIColor.fieldBorderNormal.cgColor
 		}
 		resetSupporting()
 	}
 	
+	
+	
 	func resetSupporting() {
+		isValid = false
 		if supportingLabel.text != supporting {
 			UIView.transition(with: supportingLabel, duration: 0.1, options: .transitionCrossDissolve) {
 				self.supportingLabel.text = self.supporting

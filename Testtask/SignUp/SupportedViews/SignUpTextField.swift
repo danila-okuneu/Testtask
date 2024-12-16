@@ -10,8 +10,9 @@ import UIKit
 
 final class SignUpTextField: SupportedView {
 	
+	var delegate: SignUpTextFieldDelegate?
 	
-	let type: TextFieldType
+	
 	var validationHandler: ((String) -> String?)?
 	var text: String { textField.text ?? "" }
 	
@@ -22,14 +23,12 @@ final class SignUpTextField: SupportedView {
 	}()
 	
 	
-	
 	// MARK: - Initializers
 	init(placeholder: String, supporting: String = "", ofType type: TextFieldType) {
-		self.type = type
 		super.init(title: placeholder, supporting: supporting)
 		
 		setupViews()
-		configure()
+		configure(with: type)
 		setupGesture()
 	}
 	
@@ -87,31 +86,18 @@ final class SignUpTextField: SupportedView {
 		}
 	}
 	
-	func showError(with description: String?) {
+	func showActiveAppearance() {
 		UIView.animate(withDuration: 0.3) {
-			self.titleLabel.textColor = .fieldWrong
-			self.supportingLabel.textColor = .fieldWrong
-			self.primaryView.layer.borderColor = UIColor.fieldWrong.cgColor
-		}
-		if let description {
-			supportingLabel.text = description
-		}
-	}
-	
-
-	
-	func resetAppearance() {
-		UIView.animate(withDuration: 0.3) {
-			self.titleLabel.textColor = .secondaryTitle
-			self.supportingLabel.textColor = .secondaryTitle
-			self.primaryView.layer.borderColor = UIColor.fieldBorderNormal.cgColor
+			self.titleLabel.textColor = .fieldTintNormal
+			self.supportingLabel.textColor = .fieldHint
+			self.primaryView.layer.borderColor = UIColor.fieldActive.cgColor
 		}
 		resetSupporting()
 	}
 	
 	
 	
-	private func configure() {
+	private func configure(with type: TextFieldType) {
 		switch type {
 		case .name:
 			textField.textContentType = .name
@@ -186,15 +172,17 @@ extension SignUpTextField: UITextFieldDelegate {
 		textField.endEditing(true)
 		return false
 	}
-	
-	
 }
-
 
 enum TextFieldType {
 	case name
 	case email
 	case phone
+}
+
+
+protocol SignUpTextFieldDelegate {
 	
+	func didEndEditing()
 	
 }
