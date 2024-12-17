@@ -46,6 +46,8 @@ final class MainButton: UIButton {
 	
 	
 	func disable() {
+		
+		
 		self.isEnabled = false
 		UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut) {
 			self.backgroundColor = .primaryBgDisabled

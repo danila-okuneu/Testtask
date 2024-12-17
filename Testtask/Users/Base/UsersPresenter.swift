@@ -50,22 +50,21 @@ extension UsersPresenter: UsersPresenterInput {
 extension UsersPresenter: UsersInteractorOutput, UsersViewOutputs {
 	func userDidScrollToEnd() async {
 		print("User Did Scroll to End")
-		view?.activityIsHidden(false)
+		view?.showsActivity(false)
 		await interactor?.fetchNextPage()
 	}
 	
 	func didLoadAllPages() {
-		print("Did load All pages")
 		view?.didLoadAllPages()
 	}
 	
 	func didFailToFetchUsers(error: any Error) {
-		print("Can't fetch users")
+		view?.showsActivity(true)
 	}
 	
 	
 	func didFetchUsers(_ users: [User]) {
-		view?.activityIsHidden(true)
+		view?.showsActivity(true)
 		view?.loadUsers(users)
 	}
 }

@@ -17,7 +17,7 @@ protocol UsersViewInput: AnyObject {
 	
 	func loadUsers(_ users: [User])
 
-	func activityIsHidden(_ bool: Bool)
+	func showsActivity(_ bool: Bool)
 	func didLoadAllPages()
 	
 }
@@ -86,11 +86,7 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 			make.bottom.equalToSuperview()
 			make.horizontalEdges.equalToSuperview().inset(16)
 		}
-		
-
 	}
-	
-	
 }
 
 extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
@@ -104,8 +100,6 @@ extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 		
 		if indexPath.row < users.count {
 			cell.update(with: users[indexPath.row])
-		} else {
-			cell.showSkeletons()
 		}
 		
 		if indexPath.row == users.count - 1 && !isLoading {
@@ -123,7 +117,7 @@ extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: - Input & Output
 extension UsersViewController: UsersViewInput {
 	
-	func activityIsHidden(_ bool: Bool) {
+	func showsActivity(_ bool: Bool) {
 		DispatchQueue.main.sync {
 			self.tableView.tableFooterView?.isHidden = bool			
 		}
@@ -145,11 +139,7 @@ extension UsersViewController: UsersViewInput {
 	}
 	
 	func didLoadAllPages() {
-		DispatchQueue.main.sync {
-			tableView.tableFooterView = nil
-		}
+		showsActivity(true)
 	}
-	
-
 }
 

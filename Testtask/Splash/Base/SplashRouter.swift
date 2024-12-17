@@ -10,24 +10,17 @@ import UIKit
 // MARK: - Protocol
 protocol SplashRouterProtocol: AnyObject {
 	
-	var entry: UIViewController? { get }
-	
-}
-
-protocol SplashRouterOutputs: AnyObject {
-	
 	static func start() -> UIViewController
 	
 }
 
 // MARK: - Router
-final class SplashRouter: SplashRouterProtocol, SplashRouterOutputs {
+final class SplashRouter: SplashRouterProtocol {
 	var entry: UIViewController?
 	
 	
 	static func start() -> UIViewController {
 		
-		let router = SplashRouter()
 		let view = SplashViewController(nibName: nil, bundle: nil)
 		let interactor = SplashInteractor()
 		let presenter = SplashPresenter(view: view, interactor: interactor)

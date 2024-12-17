@@ -15,6 +15,7 @@ extension UIViewController {
 			message: message,
 			preferredStyle: .alert
 		)
+		alertController.editButtonItem.tintColor = .systemBlue
 		
 		let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 		alertController.addAction(okAction)

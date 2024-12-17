@@ -103,6 +103,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 		uploadPhotoView.viewController = self
 		setupViews()
+		signUpButton.disable()
 		let appearance = UINavigationBarAppearance()
 		appearance.backgroundColor = .accent
 	
@@ -212,6 +213,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		alertController.addAction(cameraAction)
 		alertController.addAction(galleryAction)
 		alertController.addAction(cancelAction)
+		alertController.view.tintColor = .systemBlue
 		
 		present(alertController, animated: true)
 	}
@@ -305,7 +307,6 @@ extension SignUpViewController: SignUpViewInput {
 	}
 	
 	func updateSignUpButton(_ isActive: Bool) {
-		signUpButton.didTapped()
 		if isActive {
 			signUpButton.enable()
 		} else {
@@ -331,7 +332,6 @@ extension SignUpViewController: UIImagePickerControllerDelegate, UINavigationCon
 		func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 			picker.dismiss(animated: true)
 		}
-	
 }
 
 // MARK: - TableView DataSource
