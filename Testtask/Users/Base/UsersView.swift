@@ -10,13 +10,12 @@ import SnapKit
 
 protocol UsersViewProtocol: AnyObject {
 	
-	var presenter: UsersPresenter? { get set }
+	var presenter: UsersViewOutputs? { get set }
 }
 
-protocol UsersViewInput: AnyObject {
+protocol UsersViewInputs: AnyObject {
 	
 	func loadUsers(_ users: [User])
-
 	func showsActivity(_ bool: Bool)
 	func didLoadAllPages()
 	
@@ -24,7 +23,9 @@ protocol UsersViewInput: AnyObject {
 
 protocol UsersViewOutputs: AnyObject {
 	
-	func userDidScrollToEnd() async
+	func viewWillAppear()
+	func didScrollToEnd() async
+	func didRefreshTable() async
 	
 }
 
@@ -32,7 +33,7 @@ protocol UsersViewOutputs: AnyObject {
 final class UsersViewController: UIViewController, UsersViewProtocol {
 	
 	
-	var presenter: UsersPresenter?
+	var presenter: UsersViewOutputs?
 	
 	var users: [User] = [ ]
 	var isLoading = true
@@ -44,8 +45,14 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 		tableView.showsVerticalScrollIndicator = false
 		tableView.separatorInset.left = 72
 		tableView.allowsSelection = false
+		tableView.backgroundColor = .white
+		let action = UIAction { action in
+			print("triggered")
+			tableView.refreshControl?.endRefreshing()
+		}
 		
 		let spinner = UIActivityIndicatorView(style: .medium)
+		spinner.color = .gray
 		spinner.startAnimating()
 		spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
 
@@ -62,20 +69,18 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		users = [ ]
-		isLoading = true
-		tableView.reloadData()
 		presenter?.viewWillAppear()
 	}
 	
 	// MARK: - Layout
 	private func setupViews() {
 		
+		view.backgroundColor = .white
 		navigationItem.title = "Working with GET request"
 		view.addSubview(tableView)
-		tableView.delegate = self
-		tableView.dataSource = self
 		
+		
+		setupTableView()
 		setupConstraints()
 	}
 	
@@ -86,6 +91,30 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 			make.bottom.equalToSuperview()
 			make.horizontalEdges.equalToSuperview().inset(16)
 		}
+	}
+	
+	// MARK: - Methods
+	private func setupTableView() {
+		
+		tableView.delegate = self
+		tableView.dataSource = self
+		
+		let refreshControl = UIRefreshControl()
+		refreshControl.addTarget(self, action: #selector(refreshUsers), for: .valueChanged)
+		refreshControl.tintColor = .gray
+		tableView.refreshControl = refreshControl
+		
+	}
+	
+	// MARK: - Selectors
+	@objc private func refreshUsers() {
+		Task {
+			users = [ ]
+			tableView.reloadData()
+			await presenter?.didRefreshTable()
+			tableView.refreshControl?.endRefreshing()
+		}
+		
 	}
 }
 
@@ -105,8 +134,7 @@ extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 		if indexPath.row == users.count - 1 && !isLoading {
 			isLoading = true
 			Task {
-				await presenter?.userDidScrollToEnd()
-				
+				await presenter?.didScrollToEnd()
 			}
 		}
 		return cell
@@ -115,7 +143,7 @@ extension UsersViewController: UITableViewDelegate, UITableViewDataSource {
 
 
 // MARK: - Input & Output
-extension UsersViewController: UsersViewInput {
+extension UsersViewController: UsersViewInputs {
 	
 	func showsActivity(_ bool: Bool) {
 		DispatchQueue.main.sync {

@@ -34,7 +34,4 @@ final class CameraManager {
 			UIApplication.shared.open(url)
 		}
 	}
-	
-	
-	
 }

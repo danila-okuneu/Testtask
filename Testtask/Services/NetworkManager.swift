@@ -271,7 +271,7 @@ struct PositionResponse: Decodable {
 	
 }
 
-struct Position: Decodable {
+struct Position: Decodable, Equatable {
 	let id: Int
 	let name: String
 }

@@ -18,6 +18,7 @@ protocol SignUpViewInput: AnyObject {
 	func displayPositions(_ positions: [Position])
 	func displayError(_ message: String, for type: TextFieldType)
 	func clearFieldError(_ type: TextFieldType)
+	func displayUploadOptions()
 	func displayPhoto(_ image: UIImage)
 	func displaySuccessScreen()
 	func displayFailureScreen(_ message: String)
@@ -30,6 +31,7 @@ protocol SignUpViewOutput: AnyObject {
 	func didTabSignUpButton()
 	func didChangeField(_ text: String, ofType type: TextFieldType)
 	func didSelectPosition(at index: Int)
+	func didTapUpload()
 	func didPickPhoto(_ image: UIImage?)
 }
 
@@ -69,7 +71,6 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		stack.axis = .vertical
 		stack.spacing = Constants.offset
 		return stack
-		
 	}()
 	
 	private let nameTextField = SignUpTextField(placeholder: "Your name", ofType: .name)
@@ -89,6 +90,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		tableView.separatorStyle = .none
 		tableView.isScrollEnabled = false
 		tableView.selectionFollowsFocus = true
+		tableView.backgroundColor = .white
 		tableView.register(PositionViewCell.self, forCellReuseIdentifier: PositionViewCell.identifire)
 		return tableView
 	}()
@@ -115,14 +117,6 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		super.viewWillAppear(animated)
 		presenter?.viewWillAppear()
 	}
-	
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-		
-		positions = [ ]
-		selectedIndexPath = IndexPath(row: 0, section: 0)
-	}
-		
 	// MARK: - Layout
 	private func setupViews() {
 		
@@ -160,7 +154,6 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	}
 	
 	private func setupConstraints() {
-		
 		signUpButton.snp.makeConstraints { make in
 			make.centerX.equalToSuperview()
 			make.verticalEdges.equalToSuperview()
@@ -182,6 +175,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		}
 	}
 	
+	// MARK: - Methods
 	private func openImagePicker(sourceType: UIImagePickerController.SourceType) {
 		guard UIImagePickerController.isSourceTypeAvailable(sourceType) else { return }
 		
@@ -200,25 +194,12 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 	// MARK: - Button Targets
 	@objc private func showUploadOptions() {
+		
 		uploadPhotoView.uploadButton.didTapped()
 		uploadPhotoView.setNormalAppearance()
-		let alertController = UIAlertController(title: "Choose how you want to add a photo", message: nil, preferredStyle: .actionSheet)
-		let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
-			self.openImagePicker(sourceType: .camera)
-		}
-		let galleryAction = UIAlertAction(title: "Gallery", style: .default) { _ in
-			self.openImagePicker(sourceType: .photoLibrary)
-		}
-		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-		alertController.addAction(cameraAction)
-		alertController.addAction(galleryAction)
-		alertController.addAction(cancelAction)
-		alertController.view.tintColor = .systemBlue
-		
-		present(alertController, animated: true)
+		presenter?.didTapUpload()
 	}
-	
-	
+
 	@objc private func hideKeyboard() {
 		self.view.endEditing(true)
 	}
@@ -269,6 +250,7 @@ extension SignUpViewController: SignUpViewInput {
 	}
 	
 	func displayPositions(_ positions: [Position]) {
+		guard self.positions != positions else { return }
 		self.positions = positions
 		
 		DispatchQueue.main.sync {
@@ -288,6 +270,23 @@ extension SignUpViewController: SignUpViewInput {
 	
 	func displayTextFieldError(_ message: String, for supportedView: SupportedView) {
 		supportedView.showError(with: message)
+	}
+	
+	func displayUploadOptions() {
+		let alertController = UIAlertController(title: "Choose how you want to add a photo", message: nil, preferredStyle: .actionSheet)
+		let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+			self.openImagePicker(sourceType: .camera)
+		}
+		let galleryAction = UIAlertAction(title: "Gallery", style: .default) { _ in
+			self.openImagePicker(sourceType: .photoLibrary)
+		}
+		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+		alertController.addAction(cameraAction)
+		alertController.addAction(galleryAction)
+		alertController.addAction(cancelAction)
+		alertController.view.tintColor = .systemBlue
+		
+		present(alertController, animated: true)
 	}
 	
 	func displaySuccessScreen() {

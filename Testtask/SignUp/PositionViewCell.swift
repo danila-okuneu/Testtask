@@ -51,6 +51,7 @@ final class PositionViewCell: UITableViewCell {
 	// MARK: - Layout
 	private func setupViews() {
 		
+		backgroundColor = .white
 		contentView.addSubview(hStack)
 		hStack.addArrangedSubview(button)
 		hStack.addArrangedSubview(positionLabel)

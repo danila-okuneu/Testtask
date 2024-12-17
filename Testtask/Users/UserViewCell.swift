@@ -107,7 +107,7 @@ final class UserViewCell: UITableViewCell {
 	// MARK: - Layout
 	private func setupViews() {
 		
-	
+		backgroundColor = .white
 		contentView.addSubview(hStack)
 
 		let imageContainer = UIView()

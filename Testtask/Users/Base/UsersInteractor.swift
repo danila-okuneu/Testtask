@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Interactor Protocol
 protocol UsersInteractorProtocol: AnyObject {
 	
-	var output: UsersInteractorOutput? { get set }
+	var output: UsersInteractorOutputs? { get set }
 	
 }
 
@@ -20,7 +20,7 @@ protocol UsersInteractorInput: AnyObject {
 	func fetchNextPage() async
 }
 
-protocol UsersInteractorOutput: AnyObject {
+protocol UsersInteractorOutputs: AnyObject {
 	
 	func didFetchUsers(_ users: [User])
 	func didFailToFetchUsers( error: Error)
@@ -31,7 +31,7 @@ protocol UsersInteractorOutput: AnyObject {
 // MARK: - Interactor
 final class UsersInteractor: UsersInteractorProtocol {
 	
-	weak var output: UsersInteractorOutput?
+	weak var output: UsersInteractorOutputs?
 	var nextUrl: String?
 	
 }

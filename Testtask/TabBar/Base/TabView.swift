@@ -52,6 +52,8 @@ extension TabViewController: TabViewInputs {
 	
 	func setupTabBar() {
 		
+		
+		view.backgroundColor = .white
 		tabBar.backgroundImage = UIImage()
 		tabBar.shadowImage = UIImage()
 		

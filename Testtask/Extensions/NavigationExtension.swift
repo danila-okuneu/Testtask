@@ -26,8 +26,10 @@ final class StateNavigationController: UINavigationController {
 		let appearance = UINavigationBarAppearance()
 		appearance.configureWithOpaqueBackground()
 		appearance.backgroundColor = .clear
-		appearance.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 18)]
-		
+		appearance.titleTextAttributes = [
+			NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 18),
+			NSAttributedString.Key.foregroundColor: UIColor.primaryText
+		]
 		
 		navigationBar.standardAppearance = appearance
 		navigationBar.scrollEdgeAppearance = appearance

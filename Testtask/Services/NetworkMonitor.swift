@@ -7,8 +7,6 @@
 
 import Network
 
-import Network
-
 final class NetworkMonitor {
 	
 	static let shared = NetworkMonitor() // Singleton

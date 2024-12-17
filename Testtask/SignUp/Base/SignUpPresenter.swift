@@ -116,6 +116,7 @@ extension SignUpPresenter: SignUpInteractorOutput {
 // MARK: - View Output
 extension SignUpPresenter: SignUpViewOutput {
 	
+	
 	func didChangeField(_ text: String, ofType type: TextFieldType) {
 		
 		if let message = ValidationManager.validateField(with: text, ofType: type) {
@@ -136,6 +137,10 @@ extension SignUpPresenter: SignUpViewOutput {
 			}
 		}
 		updateSignUpButton()
+	}
+	
+	func didTapUpload() {
+		view?.displayUploadOptions()
 	}
 	
 	func didPickPhoto(_ image: UIImage?) {
