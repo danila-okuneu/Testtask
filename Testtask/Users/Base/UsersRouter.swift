@@ -10,20 +10,11 @@ import UIKit
 // MARK: - Protocol
 protocol UsersRouterProtocol: AnyObject {
 	
-	var entry: UIViewController? { get }
-	
-}
-
-protocol UsersRouterOutputs: AnyObject {
-	
 	static func start() -> UIViewController
-	
 }
 
 // MARK: - Router
-final class UsersRouter: UsersRouterProtocol, UsersRouterOutputs {
-	var entry: UIViewController?
-	
+final class UsersRouter: UsersRouterProtocol {
 	
 	static func start() -> UIViewController {
 		
@@ -32,12 +23,9 @@ final class UsersRouter: UsersRouterProtocol, UsersRouterOutputs {
 		let presenter = UsersPresenter(view: view, interactor: interactor)
 		
 		view.presenter = presenter
-		interactor.presenter = presenter
+		interactor.output = presenter
 		
 		return view
 	}
-	
-	
-	
 }
 

@@ -9,29 +9,62 @@ import UIKit
 
 protocol SplashViewProtocol: AnyObject {
 	
-	var presenter: SplashPresenterProtocol? { get set }
+	var presenter: SplashViewOutputs? { get set }
 }
 
 protocol SplashViewInputs: AnyObject {
 	
-	// Define input methods
+
 }
 
 protocol SplashViewOutputs: AnyObject {
 	
-	// Define output methods
+	func viewWillAppear()
 }
 
 // MARK: - View
-final class SplashViewController: UIViewController, SplashViewProtocol {
+final class SplashViewController: UIViewController, SplashViewProtocol, SplashViewInputs {
 	
-	var presenter: SplashPresenterProtocol?
+	var presenter: SplashViewOutputs?
 	
-}
-
-// MARK: - Input & Output
-extension SplashViewController: SplashViewInputs, SplashViewOutputs {
 	
-	// Extend functionality
+	// UI Components
+	private let logoImageView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.contentMode = .scaleAspectFit
+		imageView.image = .logo
+		return imageView
+	}()
+	
+	// Life cycle
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
+		setupViews()
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		presenter?.viewWillAppear()
+		
+	}
+	
+	// Layout
+	private func setupViews() {
+		
+		view.backgroundColor = .accent
+		view.addSubview(logoImageView)
+		
+		setupConstraints()
+	}
+	
+	private func setupConstraints() {
+		
+		logoImageView.snp.makeConstraints { make in
+			make.center.equalToSuperview()
+			make.width.equalToSuperview().multipliedBy(0.444444)
+		}
+		
+	}
 }
 

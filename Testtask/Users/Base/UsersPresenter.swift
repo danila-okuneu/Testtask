@@ -8,36 +8,60 @@
 // MARK: - Presenter Protocol
 protocol UsersPresenterProtocol: AnyObject {
 	
-	var view: UsersViewProtocol? { get set }
-	var interactor: UsersInteractorProtocol? {get set }
+	var view: UsersViewInputs? { get set }
+	var interactor: UsersInteractorInputs? { get set }
 	
-}
-
-protocol UsersPresenterInputs: AnyObject {
-	
-	// Define input methods
-}
-
-protocol UsersPresenterOutputs: AnyObject {
-	
-	// Define output methods
 }
 
 // MARK: - Presenter
 final class UsersPresenter: UsersPresenterProtocol {
 	
-	weak var view: UsersViewProtocol?
-	var interactor: UsersInteractorProtocol?
+	weak var view: UsersViewInputs?
+	var interactor: UsersInteractorInputs?
 	
-	init(view: UsersViewProtocol?, interactor: UsersInteractorProtocol?) {
+	var isUsersLoaded = false
+	
+	init(view: UsersViewInputs?, interactor: UsersInteractorInputs?) {
 		self.view = view
 		self.interactor = interactor
 	}
-}	
-
-// MARK: - Input & Output
-extension UsersPresenter: UsersPresenterInputs, UsersPresenterOutputs {
-	
-	// Extend functionality
 }
 
+// MARK: - Interactor Output
+extension UsersPresenter: UsersInteractorOutputs {
+	
+	func didLoadAllPages() {
+		view?.didLoadAllPages()
+	}
+	
+	func didFailToFetchUsers(error: any Error) {
+		view?.showsActivity(true)
+	}
+	
+	
+	func didFetchUsers(_ users: [User]) {
+		view?.showsActivity(true)
+		view?.loadUsers(users)
+	}
+}
+
+// MARK: - View Output
+extension UsersPresenter: UsersViewOutputs {
+	
+	func viewWillAppear() {
+		Task {
+			guard !isUsersLoaded else { return }
+			await interactor?.fetchUsers()
+			isUsersLoaded = true
+		}
+	}
+	
+	func didRefreshTable() async {
+		await interactor?.fetchUsers()
+	}
+	
+	func didScrollToEnd() async {
+		view?.showsActivity(false)
+		await interactor?.fetchNextPage()
+	}
+}

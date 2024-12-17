@@ -8,31 +8,33 @@
 // MARK: - Interactor Protocol
 protocol SplashInteractorProtocol: AnyObject {
 	
-	var presenter: SplashPresenterProtocol? { get set }
+	var output: SplashInteractorOutputs? { get set }
 	
 }
 
 protocol SplashInteractorInputs: AnyObject {
 	
-	// Define input methods
+	func checkInternetConnection()
 }
 
 protocol SplashInteractorOutputs: AnyObject {
 	
-	// Define output methods
+	func didDetectInternetConnection()
+	func didFailInternetConnection()
 }
 
 // MARK: - Interactor
-final class SplashInteractor: SplashInteractorProtocol {
+final class SplashInteractor: SplashInteractorProtocol, SplashInteractorInputs {
 	
-	weak var presenter: SplashPresenterProtocol?
+	weak var output: SplashInteractorOutputs?
 	
+	func checkInternetConnection() {
+		NetworkMonitor.shared.checkConnection{ isConnected in
+			if isConnected {
+				self.output?.didDetectInternetConnection()
+			} else {
+				self.output?.didFailInternetConnection()
+			}
+		}
+	}
 }
-
-// MARK: - Input & Output
-extension SplashInteractor: SplashInteractorInputs, SplashInteractorOutputs {
-	
-	// Extend functionality
-}
-
-

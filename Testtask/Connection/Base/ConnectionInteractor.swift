@@ -8,31 +8,40 @@
 // MARK: - Interactor Protocol
 protocol ConnectionInteractorProtocol: AnyObject {
 	
-	var presenter: ConnectionPresenterProtocol? { get set }
+	var output: ConnectionInteractorOutputs? { get set }
 	
 }
 
 protocol ConnectionInteractorInputs: AnyObject {
 	
-	// Define input methods
+	func checkInternetConnection()
 }
 
 protocol ConnectionInteractorOutputs: AnyObject {
 	
-	// Define output methods
+	func didDetectInternetConnection()
+	func didFailInternetConnection()
 }
 
 // MARK: - Interactor
 final class ConnectionInteractor: ConnectionInteractorProtocol {
 	
-	weak var presenter: ConnectionPresenterProtocol?
+	weak var output: ConnectionInteractorOutputs?
 	
 }
 
 // MARK: - Input & Output
-extension ConnectionInteractor: ConnectionInteractorInputs, ConnectionInteractorOutputs {
+extension ConnectionInteractor: ConnectionInteractorInputs {
 	
-	// Extend functionality
+	func checkInternetConnection() {
+		NetworkMonitor.shared.checkConnection{ isConnected in
+			if isConnected {
+				self.output?.didDetectInternetConnection()
+			} else {
+				self.output?.didFailInternetConnection()
+			}
+		}
+	}
 }
 
 

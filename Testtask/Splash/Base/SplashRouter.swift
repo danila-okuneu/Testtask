@@ -10,18 +10,12 @@ import UIKit
 // MARK: - Protocol
 protocol SplashRouterProtocol: AnyObject {
 	
-	var entry: UIViewController? { get }
-	
-}
-
-protocol SplashRouterOutputs: AnyObject {
-	
 	static func start() -> UIViewController
 	
 }
 
 // MARK: - Router
-final class SplashRouter: SplashRouterProtocol, SplashRouterOutputs {
+final class SplashRouter: SplashRouterProtocol {
 	var entry: UIViewController?
 	
 	
@@ -31,8 +25,9 @@ final class SplashRouter: SplashRouterProtocol, SplashRouterOutputs {
 		let interactor = SplashInteractor()
 		let presenter = SplashPresenter(view: view, interactor: interactor)
 		
+		
 		view.presenter = presenter
-		interactor.presenter = presenter
+		interactor.output = presenter
 		
 		return view
 	}
@@ -40,4 +35,6 @@ final class SplashRouter: SplashRouterProtocol, SplashRouterOutputs {
 	
 	
 }
+
+
 
