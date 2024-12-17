@@ -52,11 +52,8 @@ final class PositionViewCell: UITableViewCell {
 	private func setupViews() {
 		
 		contentView.addSubview(hStack)
-		
 		hStack.addArrangedSubview(button)
 		hStack.addArrangedSubview(positionLabel)
-		
-		
 		setupConstraints()
 	}
 	

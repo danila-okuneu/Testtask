@@ -98,19 +98,19 @@ class SupportedView: UIView {
 	
 	// MARK: - Methods
 	
-	func showError(with description: String?) {
+	/// Shows error appearance with Message in supporting label
+	func showError(with message: String?) {
 		UIView.animate(withDuration: 0.3) {
 			self.titleLabel.textColor = .fieldWrong
 			self.supportingLabel.textColor = .fieldWrong
 			self.primaryView.layer.borderColor = UIColor.fieldWrong.cgColor
 		}
-		if let description {
-			supportingLabel.text = description
+		if let message {
+			supportingLabel.text = message
 		}
 	}
 	
-
-	
+	/// Resets appearance of all views. Also resets supporting text
 	func setNormalAppearance() {
 		UIView.animate(withDuration: 0.3) {
 			self.titleLabel.textColor = .secondaryTitle
@@ -119,8 +119,6 @@ class SupportedView: UIView {
 		}
 		resetSupporting()
 	}
-	
-	
 	
 	func resetSupporting() {
 		if supportingLabel.text != supporting {

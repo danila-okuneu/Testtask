@@ -32,7 +32,7 @@ final class SignUpResultViewController: UIViewController {
 		return label
 	}()
 	
-	private let button = RoundedButton(with: "Got it")
+	private let button = MainButton(with: "Got it")
 	
 	init(_ success: Bool, message: String = "User successfully registered") {
 		super.init(nibName: nil, bundle: nil)
@@ -94,6 +94,7 @@ final class SignUpResultViewController: UIViewController {
 	}
 	
 	@objc private func buttonTapped() {
+		button.didTapped()
 		dismiss(animated: true)
 	}
 	

@@ -27,12 +27,14 @@ final class SplashRouter: SplashRouterProtocol, SplashRouterOutputs {
 	
 	static func start() -> UIViewController {
 		
+		let router = SplashRouter()
 		let view = SplashViewController(nibName: nil, bundle: nil)
 		let interactor = SplashInteractor()
 		let presenter = SplashPresenter(view: view, interactor: interactor)
 		
+		
 		view.presenter = presenter
-		interactor.presenter = presenter
+		interactor.output = presenter
 		
 		return view
 	}
@@ -40,4 +42,6 @@ final class SplashRouter: SplashRouterProtocol, SplashRouterOutputs {
 	
 	
 }
+
+
 

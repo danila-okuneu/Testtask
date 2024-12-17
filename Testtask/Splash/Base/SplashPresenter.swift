@@ -11,58 +11,53 @@ import UIKit
 protocol SplashPresenterProtocol: AnyObject {
 	
 	var view: SplashViewProtocol? { get set }
-	var interactor: SplashInteractorProtocol? {get set }
-	
-}
-
-protocol SplashPresenterInputs: AnyObject {
-	
-	// Define input methods
-	
-	func endLoading()
+	var interactor: SplashInteractorInputs? {get set }
 	
 }
 
 protocol SplashPresenterOutputs: AnyObject {
 	
-	// Define output methods
+	func changeController(to controller: UIViewController)
 }
 
 // MARK: - Presenter
 final class SplashPresenter: SplashPresenterProtocol {
 	
 	weak var view: SplashViewProtocol?
-	var interactor: SplashInteractorProtocol?
+	var interactor: SplashInteractorInputs?
 		
-	init(view: SplashViewProtocol?, interactor: SplashInteractorProtocol?) {
+	init(view: SplashViewProtocol?, interactor: SplashInteractorInputs?) {
 		self.view = view
 		self.interactor = interactor
 	}
-}
-
-// MARK: - Input & Output
-extension SplashPresenter: SplashPresenterInputs, SplashPresenterOutputs {
 	
-	func endLoading() {
-	
-		changeController()
-	}
-	
-	private func changeController() {
+	func changeController(to controller: UIViewController) {
 		
 		if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
 			guard let window = scene.windows.first else { return }
 			
-			NetworkMonitor.shared.checkConnection { isConnected in
-				if isConnected {
-					let controller = TabRouter.start()
-					window.rootViewController = controller
-				}
-			}
+			window.rootViewController = controller
 		}
-		
-		
 	}
-	// Extend functionality
 }
 
+// MARK: - View Outputs
+extension SplashPresenter: SplashViewOutputs {
+	
+	func viewWillAppear() {
+		interactor?.checkInternetConnection()
+	}
+}
+
+extension SplashPresenter: SplashInteractorOutputs {
+	
+	
+	func didDetectInternetConnection() {
+		changeController(to: TabRouter.start())
+	}
+	
+	func didFailInternetConnection() {
+		changeController(to: ConnectionRouter.start())
+	}
+	
+}

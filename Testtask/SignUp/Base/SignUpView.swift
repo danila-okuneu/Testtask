@@ -95,7 +95,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 	private let uploadPhotoView = UploadView()
 	
-	private let signUpButton = RoundedButton(with: "Sign Up")
+	private let signUpButton = MainButton(with: "Sign Up")
 	
 	// MARK: - Life cycle
 	override func viewDidLoad() {
@@ -199,6 +199,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	
 	// MARK: - Button Targets
 	@objc private func showUploadOptions() {
+		uploadPhotoView.uploadButton.didTapped()
 		uploadPhotoView.setNormalAppearance()
 		let alertController = UIAlertController(title: "Choose how you want to add a photo", message: nil, preferredStyle: .actionSheet)
 		let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
@@ -291,7 +292,7 @@ extension SignUpViewController: SignUpViewInput {
 		DispatchQueue.main.sync {
 			let vc = SignUpResultViewController(true)
 			vc.modalPresentationStyle = .fullScreen
-			present(vc, animated: true)			
+			present(vc, animated: true)
 		}
 	}
 	
@@ -304,6 +305,7 @@ extension SignUpViewController: SignUpViewInput {
 	}
 	
 	func updateSignUpButton(_ isActive: Bool) {
+		signUpButton.didTapped()
 		if isActive {
 			signUpButton.enable()
 		} else {

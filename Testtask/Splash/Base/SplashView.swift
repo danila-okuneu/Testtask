@@ -9,23 +9,19 @@ import UIKit
 
 protocol SplashViewProtocol: AnyObject {
 	
-	var presenter: SplashPresenterInputs? { get set }
-}
-
-protocol SplashViewInputs: AnyObject {
-	
-	// Define input methods
+	var presenter: SplashViewOutputs? { get set }
 }
 
 protocol SplashViewOutputs: AnyObject {
 	
-	// Define output methods
+	func viewWillAppear()
 }
 
 // MARK: - View
 final class SplashViewController: UIViewController, SplashViewProtocol {
 	
-	var presenter: SplashPresenterInputs?
+	var presenter: SplashViewOutputs?
+	
 	
 	// UI Components
 	private let logoImageView: UIImageView = {
@@ -40,9 +36,11 @@ final class SplashViewController: UIViewController, SplashViewProtocol {
 		super.viewDidLoad()
 		
 		setupViews()
-		presenter?.endLoading()
-		
-
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		presenter?.viewWillAppear()
 		
 	}
 	
@@ -64,11 +62,4 @@ final class SplashViewController: UIViewController, SplashViewProtocol {
 		
 	}
 }
-
-// MARK: - Input & Output
-extension SplashViewController: SplashViewInputs, SplashViewOutputs {
-	
-	// Extend functionality
-}
-
 

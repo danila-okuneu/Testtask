@@ -25,24 +25,8 @@ final class UploadView: SupportedView {
 		return imageView
 	}()
 	
-	let uploadButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("Upload", for: .normal)
-		button.setTitleColor(.secondaryTint, for: .normal)
-		button.titleLabel?.font = .nunitoSans(ofSize: Constants.fontSize, weight: .semibold)
-		
-		return button
-	}()
-	
-	private let removeButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("Remove", for: .normal)
-		button.setTitleColor(.secondaryTint, for: .normal)
-		button.titleLabel?.font = .nunitoSans(ofSize: Constants.fontSize, weight: .semibold)
-		button.isHidden = true
-		return button
-	}()
-	
+	let uploadButton = SecondaryButton(with: "Upload")
+	private let removeButton = SecondaryButton(with: "Remove")
 	
 	// MARK: - Initializer
 	init() {
@@ -62,6 +46,7 @@ final class UploadView: SupportedView {
 		primaryView.addSubview(removeButton)
 		primaryView.addSubview(uploadButton)
 		setupConstraints()
+		removeButton.isHidden = true
 		removeButton.addTarget(self, action: #selector(removePhoto), for: .touchUpInside)
 	}
 	
@@ -95,6 +80,7 @@ final class UploadView: SupportedView {
 	
 	@objc private func removePhoto() {
 		
+		removeButton.didTapped()
 		photoImageView.image = nil
 		photoImageView.isHidden = true
 		removeButton.isHidden = true
