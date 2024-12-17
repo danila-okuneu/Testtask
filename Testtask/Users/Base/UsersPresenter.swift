@@ -9,18 +9,7 @@
 protocol UsersPresenterProtocol: AnyObject {
 	
 	var view: UsersViewInputs? { get set }
-	var interactor: UsersInteractorInput? { get set }
-	
-}
-
-protocol UsersPresenterInput: AnyObject {
-	
-	func viewWillAppear()
-	
-}
-
-protocol UsersPresenterOutputs: AnyObject {
-	
+	var interactor: UsersInteractorInputs? { get set }
 	
 }
 
@@ -28,25 +17,13 @@ protocol UsersPresenterOutputs: AnyObject {
 final class UsersPresenter: UsersPresenterProtocol {
 	
 	weak var view: UsersViewInputs?
-	var interactor: UsersInteractorInput?
+	var interactor: UsersInteractorInputs?
 	
 	var isUsersLoaded = false
 	
-	init(view: UsersViewInputs?, interactor: UsersInteractorInput?) {
+	init(view: UsersViewInputs?, interactor: UsersInteractorInputs?) {
 		self.view = view
 		self.interactor = interactor
-	}
-}	
-
-// MARK: - Input
-extension UsersPresenter: UsersPresenterInput {
-	
-	func viewWillAppear() {
-		Task {
-			guard !isUsersLoaded else { return }
-			await interactor?.fetchUsers()
-			isUsersLoaded = true
-		}
 	}
 }
 
@@ -68,7 +45,16 @@ extension UsersPresenter: UsersInteractorOutputs {
 	}
 }
 
+// MARK: - View Output
 extension UsersPresenter: UsersViewOutputs {
+	
+	func viewWillAppear() {
+		Task {
+			guard !isUsersLoaded else { return }
+			await interactor?.fetchUsers()
+			isUsersLoaded = true
+		}
+	}
 	
 	func didRefreshTable() async {
 		await interactor?.fetchUsers()

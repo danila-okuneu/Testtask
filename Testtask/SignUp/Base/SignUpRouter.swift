@@ -10,20 +10,12 @@ import UIKit
 // MARK: - Protocol
 protocol SignUpRouterProtocol: AnyObject {
 	
-	var entry: UIViewController? { get }
-	
-}
-
-protocol SignUpRouterOutputs: AnyObject {
-	
 	static func start() -> UIViewController
 	
 }
 
 // MARK: - Router
-final class SignUpRouter: SignUpRouterProtocol, SignUpRouterOutputs {
-	var entry: UIViewController?
-	
+final class SignUpRouter: SignUpRouterProtocol {
 	
 	static func start() -> UIViewController {
 		
@@ -36,8 +28,5 @@ final class SignUpRouter: SignUpRouterProtocol, SignUpRouterOutputs {
 		
 		return view
 	}
-	
-	
-	
 }
 

@@ -15,7 +15,7 @@ protocol ConnectionViewProtocol: AnyObject {
 
 protocol ConnectionViewInputs: AnyObject {
 	
-	// Define input methods
+	func showAlert(message: String, title: String)
 }
 
 protocol ConnectionViewOutputs: AnyObject {
@@ -85,12 +85,12 @@ final class ConnectionViewController: UIViewController, ConnectionViewProtocol {
 	private func setupConstraints() {
 		
 		stackView.snp.makeConstraints { make in
-			make.center.equalToSuperview()
-			
+			make.centerY.equalToSuperview()
+			make.horizontalEdges.equalToSuperview()
 		}
 		
 		connectionImageView.snp.makeConstraints { make in
-			make.size.equalTo(200)
+			make.height.equalTo(200)
 		}
 	}
 	
@@ -104,6 +104,8 @@ final class ConnectionViewController: UIViewController, ConnectionViewProtocol {
 // MARK: - Input & Output
 extension ConnectionViewController: ConnectionViewInputs {
 	
-	// Extend functionality
+	func showAlert(message: String, title: String = "") {
+		self.showErrorAlert(message: message, title: title)
+	}
 }
 

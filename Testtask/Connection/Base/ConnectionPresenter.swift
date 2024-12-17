@@ -10,25 +10,18 @@ import UIKit
 // MARK: - Presenter Protocol
 protocol ConnectionPresenterProtocol: AnyObject {
 	
-	var view: ConnectionViewController? { get set }
+	var view: ConnectionViewInputs? { get set }
 	var interactor: ConnectionInteractorInputs? {get set }
 	
-}
-
-
-
-protocol ConnectionPresenterOutputs: AnyObject {
-	
-	// Define output methods
 }
 
 // MARK: - Presenter
 final class ConnectionPresenter: ConnectionPresenterProtocol {
 	
-	weak var view: ConnectionViewController?
+	weak var view: ConnectionViewInputs?
 	var interactor: ConnectionInteractorInputs?
 	
-	init(view: ConnectionViewController?, interactor: ConnectionInteractorInputs?) {
+	init(view: ConnectionViewInputs, interactor: ConnectionInteractorInputs) {
 		self.view = view
 		self.interactor = interactor
 	}
@@ -60,10 +53,6 @@ extension ConnectionPresenter: ConnectionInteractorOutputs {
 	}
 	
 	func didFailInternetConnection() {
-		view?.showErrorAlert(message: "Please, check your Wifi or cellular internet connection", title: "No connection")
+		view?.showAlert(message: "Please, check your Wifi or cellular internet connection", title: "No connection")
 	}
-	
-	
-	
-	
 }

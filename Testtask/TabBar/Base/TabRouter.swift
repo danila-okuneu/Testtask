@@ -10,7 +10,8 @@ import UIKit
 // MARK: - Protocol
 protocol TabRouterProtocol: AnyObject {
 	
-	var entry: UIViewController? { get }
+	
+	
 }
 
 // MARK: - Router

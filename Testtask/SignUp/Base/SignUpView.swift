@@ -13,13 +13,15 @@ protocol SignUpViewProtocol: AnyObject {
 	var presenter: SignUpViewOutput? { get set }
 }
 
-protocol SignUpViewInput: AnyObject {
+protocol SignUpViewInputs: AnyObject {
 	
 	func displayPositions(_ positions: [Position])
 	func displayError(_ message: String, for type: TextFieldType)
 	func clearFieldError(_ type: TextFieldType)
 	func displayUploadOptions()
 	func displayPhoto(_ image: UIImage)
+	func displayRegisterActivity()
+	func hideRegisterActivity()
 	func displaySuccessScreen()
 	func displayFailureScreen(_ message: String)
 	func updateSignUpButton(_ isActive: Bool)
@@ -43,6 +45,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	private var isLoading = true
 	private var positions: [Position] = [ ]
 	private var selectedIndexPath = IndexPath(row: 0, section: 0)
+	private var registerActivityAlert: UIAlertController?
 	
 	// MARK: - UI Components
 	private let imageView = UIImageView()
@@ -211,7 +214,36 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 }
 
 // MARK: - View Inputs
-extension SignUpViewController: SignUpViewInput {
+extension SignUpViewController: SignUpViewInputs {
+	
+	func displayRegisterActivity() {
+		let alert = UIAlertController(title: "Registering user", message: nil, preferredStyle: .alert)
+		
+		let activityView = UIActivityIndicatorView(style: .medium)
+		activityView.color = .gray
+		activityView.startAnimating()
+		
+		alert.view.addSubview(activityView)
+		activityView.snp.makeConstraints { make in
+			make.centerX.equalToSuperview()
+			make.bottom.equalToSuperview().offset(-30)
+		}
+		alert.view.snp.makeConstraints { make in
+			make.height.equalTo(120)
+		}
+		
+		self.registerActivityAlert = alert
+		present(alert, animated: true)
+		
+	}
+	
+	func hideRegisterActivity() {
+		DispatchQueue.main.sync {
+			registerActivityAlert?.dismiss(animated: true)
+		}
+		registerActivityAlert = nil
+	}
+	
 	func displayPhoto(_ image: UIImage) {
 		uploadPhotoView.loadPhoto(image)
 	}

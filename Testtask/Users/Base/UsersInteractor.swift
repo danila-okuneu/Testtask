@@ -14,7 +14,7 @@ protocol UsersInteractorProtocol: AnyObject {
 	
 }
 
-protocol UsersInteractorInput: AnyObject {
+protocol UsersInteractorInputs: AnyObject {
 	
 	func fetchUsers() async
 	func fetchNextPage() async
@@ -37,7 +37,7 @@ final class UsersInteractor: UsersInteractorProtocol {
 }
 
 // MARK: - Input
-extension UsersInteractor: UsersInteractorInput {
+extension UsersInteractor: UsersInteractorInputs {
 	func fetchNextPage() async {
 		guard let urlString = nextUrl, let url = URL(string: urlString) else { return }
 		do {

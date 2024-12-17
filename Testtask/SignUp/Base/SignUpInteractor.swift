@@ -14,7 +14,7 @@ protocol SignUpInteractorProtocol: AnyObject {
 	
 }
 
-protocol SignUpInteractorInput: AnyObject {
+protocol SignUpInteractorInputs: AnyObject {
 	
 	func registerUser(_ request: RegisterUserRequest) async
 	func fetchPositions() async
@@ -37,7 +37,7 @@ final class SignUpInteractor: SignUpInteractorProtocol {
 }
 
 // MARK: - Interactor Input
-extension SignUpInteractor: SignUpInteractorInput {
+extension SignUpInteractor: SignUpInteractorInputs {
 
 	func registerUser(_ request: RegisterUserRequest) async {
 		

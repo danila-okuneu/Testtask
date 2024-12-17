@@ -12,24 +12,14 @@ import Dispatch
 protocol SignUpPresenterProtocol: AnyObject {
 	
 	var view: SignUpViewController? { get set }
-	var interactor: SignUpInteractorInput? { get set }
-	
-}
-
-protocol SignUpPresenterInputs: AnyObject {
-	
-}
-
-protocol SignUpPresenterOutputs: AnyObject {
-	
-	// Define output methods
+	var interactor: SignUpInteractorInputs? { get set }
 }
 
 // MARK: - Presenter
 final class SignUpPresenter: SignUpPresenterProtocol {
 	
 	weak var view: SignUpViewController?
-	var interactor: SignUpInteractorInput?
+	var interactor: SignUpInteractorInputs?
 	
 	var name: String?
 	var email: String?
@@ -37,54 +27,10 @@ final class SignUpPresenter: SignUpPresenterProtocol {
 	var photo: UIImage?
 	var position: Int?
 	
-	init(view: SignUpViewController?, interactor: SignUpInteractor?) {
+	init(view: SignUpViewController?, interactor: SignUpInteractorInputs?) {
 		self.view = view
 		self.interactor = interactor
 	}
-}
-
-// MARK: - Input
-extension SignUpPresenter: SignUpPresenterInputs {
-	
-	func viewWillAppear() {
-		Task {
-			await interactor?.fetchPositions()
-		}
-	}
-	
-	func didTabSignUpButton() {
-		
-		guard let name, let email, let phone, let photo, let position else {
-			view?.updateSignUpButton(false)
-			return
-		}
-
-		guard let data = photo.jpegData(compressionQuality: 0.8) else { return }
-		
-		
-		let request = RegisterUserRequest(name: name, email: email, phone: phone, positionId: position, photo: data)
-		Task {
-			await interactor?.registerUser(request)
-		}
-		
-		
-	}
-	
-
-	
-	func didSelectPosition(at index: Int) {
-		self.position = index + 1
-		updateSignUpButton()
-	}
-	
-	func didPickPhoto(_ image: UIImage) {
-		if let message = ValidationManager.validatePhoto(image) {
-			view?.displayError(message, for: .photo)
-			return
-		}
-		self.photo = image
-	}
-	
 }
 
 
@@ -92,10 +38,12 @@ extension SignUpPresenter: SignUpPresenterInputs {
 extension SignUpPresenter: SignUpInteractorOutput {
 	
 	func didRegisterUser() {
+		view?.hideRegisterActivity()
 		view?.displaySuccessScreen()
 	}
 	
 	func didFailureToRegisterUser(_ message: String) {
+		view?.hideRegisterActivity()
 		view?.displayFailureScreen(message)
 	}
 	
@@ -116,6 +64,24 @@ extension SignUpPresenter: SignUpInteractorOutput {
 // MARK: - View Output
 extension SignUpPresenter: SignUpViewOutput {
 	
+	func viewWillAppear() {
+		Task {
+			await interactor?.fetchPositions()
+		}
+	}
+	
+	func didSelectPosition(at index: Int) {
+		self.position = index + 1
+		updateSignUpButton()
+	}
+	
+	func didPickPhoto(_ image: UIImage) {
+		if let message = ValidationManager.validatePhoto(image) {
+			view?.displayError(message, for: .photo)
+			return
+		}
+		self.photo = image
+	}
 	
 	func didChangeField(_ text: String, ofType type: TextFieldType) {
 		
@@ -146,7 +112,7 @@ extension SignUpPresenter: SignUpViewOutput {
 	func didPickPhoto(_ image: UIImage?) {
 		photo = image
 		if let image {
-			view?.displayPhoto(image)			
+			view?.displayPhoto(image)
 		}
 		updateSignUpButton()
 	}
@@ -157,5 +123,21 @@ extension SignUpPresenter: SignUpViewOutput {
 			return
 		}
 		view?.updateSignUpButton(true)
+	}
+	
+	func didTabSignUpButton() {
+		
+		guard let name, let email, let phone, let photo, let position else {
+			view?.updateSignUpButton(false)
+			return
+		}
+		view?.displayRegisterActivity()
+
+		guard let data = photo.jpegData(compressionQuality: 0.8) else { return }
+		
+		let request = RegisterUserRequest(name: name, email: email, phone: phone, positionId: position, photo: data)
+		Task {
+			await interactor?.registerUser(request)
+		}
 	}
 }

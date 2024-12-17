@@ -12,13 +12,18 @@ protocol SplashViewProtocol: AnyObject {
 	var presenter: SplashViewOutputs? { get set }
 }
 
+protocol SplashViewInputs: AnyObject {
+	
+
+}
+
 protocol SplashViewOutputs: AnyObject {
 	
 	func viewWillAppear()
 }
 
 // MARK: - View
-final class SplashViewController: UIViewController, SplashViewProtocol {
+final class SplashViewController: UIViewController, SplashViewProtocol, SplashViewInputs {
 	
 	var presenter: SplashViewOutputs?
 	

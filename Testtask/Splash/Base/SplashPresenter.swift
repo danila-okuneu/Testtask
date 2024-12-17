@@ -10,8 +10,8 @@ import UIKit
 // MARK: - Presenter Protocol
 protocol SplashPresenterProtocol: AnyObject {
 	
-	var view: SplashViewProtocol? { get set }
-	var interactor: SplashInteractorInputs? {get set }
+	var view: SplashViewInputs? { get set }
+	var interactor: SplashInteractorInputs? { get set }
 	
 }
 
@@ -23,10 +23,10 @@ protocol SplashPresenterOutputs: AnyObject {
 // MARK: - Presenter
 final class SplashPresenter: SplashPresenterProtocol {
 	
-	weak var view: SplashViewProtocol?
+	weak var view: SplashViewInputs?
 	var interactor: SplashInteractorInputs?
 		
-	init(view: SplashViewProtocol?, interactor: SplashInteractorInputs?) {
+	init(view: SplashViewInputs?, interactor: SplashInteractorInputs?) {
 		self.view = view
 		self.interactor = interactor
 	}

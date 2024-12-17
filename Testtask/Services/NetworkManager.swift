@@ -24,6 +24,13 @@ final class NetworkManager {
 	}()
 	
 		
+	// MARK: - Fetch Token
+	/// Fetches an authentication token from the server.
+	/// - Throws:
+	///   - `URLError.badURL` if the URL is invalid.
+	///   - `URLError.cannotParseResponse` if the response cannot be parsed.
+	///   - `URLError.badServerResponse` for any server-side errors.
+	/// - Returns: A valid authentication token as a `String`
 	func fetchToken() async throws -> String {
 		
 		guard let url = makeURL(to: .token) else { throw URLError(.badURL) }
@@ -43,15 +50,23 @@ final class NetworkManager {
 		}
 	}
 	
+	// MARK: - Register User
+	/// Registers a new user by sending their data to the server.
+	/// - Parameters:
+	///   - userRequest: A `RegisterUserRequest` object containing user details.
+	///   - token: A valid authentication token for authorization.
+	/// - Throws:
+	///   - `URLError.badURL` if the URL is invalid.
+	///   - `NetworkError.dataResponseError` if the server returns an error message.
+	///   - `NetworkError.badServerResponse` if the response status is not 2xx.
+	/// - Returns: A `RegisterUserResponse` containing server confirmation of the registration.
 	func registerUser(userRequest: RegisterUserRequest, token: String) async throws -> RegisterUserResponse {
 		guard let url = makeURL(to: .register) else { throw URLError(.badURL) }
 			
 			var request = URLRequest(url: url)
-			request.httpMethod = "POST"
-			request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-			request.setValue("Token \(token)", forHTTPHeaderField: "Authorization")
-			
 			let boundary = UUID().uuidString
+		
+			request.httpMethod = "POST"
 			request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 			request.setValue(token, forHTTPHeaderField: "Token")
 		
@@ -65,7 +80,6 @@ final class NetworkManager {
 			
 			switch httpResponse.statusCode {
 			case 200...299:
-				print("success")
 				let decoder = JSONDecoder()
 				return try decoder.decode(RegisterUserResponse.self, from: data)
 			default:
@@ -76,6 +90,12 @@ final class NetworkManager {
 			}
 		}
 	
+	// MARK: - Create Multipart Body
+	/// Builds a multipart/form-data request body for user registration.
+	/// - Parameters:
+	///   - request: The `RegisterUserRequest` containing user details.
+	///   - boundary: A unique string to separate parts of the body.
+	/// - Returns: A `Data` object containing the complete multipart body.
 	private func createMultipartBody(with request: RegisterUserRequest, boundary: String) -> Data {
 		var body = Data()
 		
@@ -102,6 +122,13 @@ final class NetworkManager {
 		return body
 	}
 	
+	// MARK: - Fetch Users with Pagination
+	/// Fetches a paginated list of users from the server.
+	/// - Parameters:
+	///   - page: The page number to fetch (default is 1).
+	///   - count: The number of users per page (default is 6).
+	/// - Throws: `NetworkError` or `URLError` for invalid responses.
+	/// - Returns: A `UsersResponse` object containing the list of users.
 	func fetchUsers(page: Int = 1, count: Int = 6) async throws -> UsersResponse {
 		guard let url = makeURL(to: .users(page: page, count: count)) else { throw NetworkError.invalidURL }
 		let (data, response) = try await session.data(from: url)
@@ -120,6 +147,13 @@ final class NetworkManager {
 		}
 	}
 	
+	// MARK: - Fetch Users from URL
+	/// Fetches a list of users from the provided URL.
+	/// - Parameter url: The endpoint URL to fetch users.
+	/// - Throws:
+	///   - `URLError.cannotParseResponse` if the response is invalid.
+	///   - `NetworkError.badServerResponse` if the response status is not in the 2xx range.
+	/// - Returns: A `UsersResponse` object containing the list of users.
 	func fetchUsers(from url: URL) async throws -> UsersResponse {
 		let (data, response) = try await session.data(from: url)
 		guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.cannotParseResponse) }
@@ -134,11 +168,19 @@ final class NetworkManager {
 		}
 	}
 	
+	// MARK: - Fetch Positions
+	/// Fetches a list of available positions from the server.
+	/// - Throws:
+	///   - `NetworkError.invalidURL` if the URL cannot be created.
+	///   - `URLError.cannotParseResponse` if the response is invalid.
+	///   - `NetworkError.dataResponseError` if the server returns an error message.
+	///   - `NetworkError.badServerResponse` for responses outside the 2xx range.
+	/// - Returns: A `PositionResponse` object containing the list of positions.
 	func fetchPositions() async throws -> PositionResponse {
 		guard let url = makeURL(to: .positions) else { throw NetworkError.invalidURL }
-		print(url)
 		let (data, response) = try await session.data(from: url)
 		guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.cannotParseResponse) }
+		
 		switch httpResponse.statusCode {
 		case 200...299:
 			let decoder = JSONDecoder()
@@ -151,12 +193,12 @@ final class NetworkManager {
 			}
 			throw NetworkError.badServerResponse(statusCode: httpResponse.statusCode)
 		}
-		
-		
 	}
 	
-	
-	
+	// MARK: - Make URL
+	/// Constructs a URL for the specified request type.
+	/// - Parameter request: The `RequestType` enum representing the desired endpoint.
+	/// - Returns: A valid `URL` object or `nil` if the URL could not be constructed.
 	private func makeURL(to request: RequestType) -> URL? {
 		
 		var components = URLComponents()
@@ -183,95 +225,5 @@ final class NetworkManager {
 	}
 }
 
-// MARK: - HTTP Method Enum
-enum RequestType {
-	case users(page: Int, count: Int)
-	case token
-	case register
-	case positions
-}
 
-struct TokenResponse: Decodable {
-	let success: Bool
-	let token: String
-}
 
-struct ErrorResponse: Decodable {
-	let success: Bool
-	let message: String
-}
-
-struct User: Decodable {
-	let id: Int
-	let name: String
-	let email: String
-	let phone: String
-	let position: String
-	let photo: String
-}
-
-struct UsersResponse: Decodable {
-	let success: Bool
-	let totalPages: Int
-	let totalUsers: Int
-	let page: Int
-	
-	let links: UsersLinks
-	
-	let users: [User]
-	
-	
-	
-}
-
-struct UsersLinks: Decodable {
-	let nextUrl: String?
-	let prevUrl: String?
-	
-}
-
-struct RegisterUserRequest: Codable {
-	let name: String
-	let email: String
-	let phone: String
-	let positionId: Int
-	let photo: Data
-	
-}
-
-struct RegisterUserResponse: Decodable {
-	let success: Bool
-	let message: String
-	
-}
-
-enum NetworkError: Error, LocalizedError {
-	case invalidURL
-	case badServerResponse(statusCode: Int)
-	case decodingError
-	case dataResponseError(String)
-	
-	var errorDescription: String? {
-		switch self {
-		case .invalidURL:
-			return "Invalid URL adress"
-		case .badServerResponse(let statusCode):
-			return "Error. Status code: \(statusCode)"
-		case .decodingError:
-			return "Cannot decode response"
-		case .dataResponseError(let string):
-			return string
-		}
-	}
-}
-
-struct PositionResponse: Decodable {
-	let success: Bool
-	let positions: [Position]
-	
-}
-
-struct Position: Decodable, Equatable {
-	let id: Int
-	let name: String
-}
