@@ -9,6 +9,31 @@ import UIKit
 
 
 typealias C = Constants
+
+/// A centralized structure to store app-wide constants, such as spacing, fonts, colors, and other UI-related values.
+/// The `Constants` struct helps to avoid magic numbers and hardcoded values throughout the codebase,
+/// ensuring better maintainability, consistency, and readability.
+///
+/// Usage:
+/// - Use `Constants` to access predefined values for layout, fonts, and reusable components.
+/// - Organize constants into nested structures to group related values logically (e.g., `Font`, `Button`, `UserCell`).
+/// - For convenience, you can use a typealias, such as `C`, to shorten access to constants.
+///
+/// Example:
+/// ```
+/// let padding = Constants.padding
+/// button.layer.cornerRadius = Constants.Button.cornerRadius
+/// titleLabel.font = Constants.Font.heading
+/// ```
+/// Use `C` as a shorthand for accessing constants throughout the project.
+/// This helps to shorten your code and improve readability.
+///
+///Example:
+/// ```
+/// let padding = C.padding
+/// button.layer.cornerRadius = C.Button.cornerRadius
+/// titleLabel.font = C.Font.heading
+/// ```
 struct Constants {
 	
 	private static let ratio = CGFloat.ratio
