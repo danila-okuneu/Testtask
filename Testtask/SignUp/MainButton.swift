@@ -35,12 +35,12 @@ final class MainButton: UIButton {
 		setTitleColor(.primaryTintDisabled, for: .disabled)
 		setTitleColor(.primaryTintPressed, for: .highlighted)
 		
-		titleLabel?.font = .nunitoSans(ofSize: 18, weight: .semibold)
+		titleLabel?.font = C.MainButton.font
 		backgroundColor = .accent
 		
 		snp.makeConstraints { make in
-			make.width.equalTo(Constants.width)
-			make.height.equalTo(Constants.height)
+			make.width.equalTo(C.MainButton.width)
+			make.height.equalTo(C.MainButton.height)
 		}
 	}
 	
@@ -68,18 +68,4 @@ final class MainButton: UIButton {
 		}
 		
 	}
-}
-
-
-extension MainButton {
-	
-	private struct Constants {
-		
-		private static let ratio = CGFloat.ratio
-		
-		static let height = 48 * ratio
-		static let width = 140 * ratio
-		
-	}
-	
 }

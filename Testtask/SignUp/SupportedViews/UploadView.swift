@@ -53,7 +53,7 @@ final class UploadView: SupportedView {
 	private func setupConstraints() {
 		
 		photoImageView.snp.makeConstraints { make in
-			make.left.equalTo(Constants.padding / 2)
+			make.left.equalTo(C.semipadding)
 			make.centerY.equalToSuperview()
 			make.height.width.equalTo(primaryView.snp.height).multipliedBy(0.8)
 		}
@@ -61,13 +61,13 @@ final class UploadView: SupportedView {
 		
 		removeButton.snp.makeConstraints { make in
 			make.centerY.equalToSuperview()
-			make.left.equalTo(photoImageView.snp.right).offset(Constants.padding / 2)
+			make.left.equalTo(photoImageView.snp.right).offset(C.semipadding)
 		}
 		
 		
 		uploadButton.snp.makeConstraints { make in
 			make.centerY.equalToSuperview()
-			make.right.equalToSuperview().inset(Constants.padding)
+			make.right.equalToSuperview().inset(C.padding)
 		}
 	}
 	
@@ -91,21 +91,6 @@ final class UploadView: SupportedView {
 		
 	}
 }
-
-
-// MARK: - Constants
-extension UploadView {
-	
-	private struct Constants {
-		
-		static let ratio = CGFloat.ratio
-		
-		static let fontSize = 16 * ratio
-		
-		static let padding = 16 * ratio
-	}
-}
-
 
 protocol UploadViewDelegate {
 	

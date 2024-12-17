@@ -10,7 +10,7 @@ import SnapKit
 
 final class SecondaryButton: UIButton {
 	
-	// MARK: - Initializers
+	// Initializers
 	init(with title: String) {
 		super.init(frame: .zero)
 		
@@ -22,42 +22,32 @@ final class SecondaryButton: UIButton {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// Life cycle
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		layer.cornerRadius = frame.height / 2
 	}
 	
+	// Methods
 	private func setupButton() {
 		
 		setTitleColor(.secondaryTint, for: .normal)
 		setTitleColor(.primaryTintDisabled, for: .disabled)
 		setTitleColor(.primaryTintPressed, for: .highlighted)
 		
-		titleLabel?.font = .nunitoSans(ofSize: 18, weight: .semibold)
+		titleLabel?.font = C.SecondaryButton.font
 			
 		snp.makeConstraints { make in
 			
-			make.height.equalTo(Constants.height)
-			make.width.equalTo(Constants.width)
+			make.height.equalTo(C.SecondaryButton.width)
+			make.width.equalTo(C.SecondaryButton.height)
 		}
 	}
-	
 	
 	func didTapped() {
 		backgroundColor = .secondaryPressed
 		UIView.animate(withDuration: 0.3, delay: 0.1, options: .curveEaseInOut) {
 			self.backgroundColor = .clear
 		}
-		
 	}
-}
-
-extension SecondaryButton {
-	private struct Constants {
-		
-		static let height = 40 * CGFloat.ratio
-		static let width = 91 * CGFloat.ratio
-		
-	}
-	
 }

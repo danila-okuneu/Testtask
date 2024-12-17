@@ -25,7 +25,7 @@ final class PositionViewCell: UITableViewCell {
 	private let positionLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .primaryText
-		label.font = .nunitoSans(ofSize: 16)
+		label.font = C.Font.bodyMedium
 		return label
 	}()
 	

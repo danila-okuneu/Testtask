@@ -16,7 +16,7 @@ class SupportedView: UIView {
 	let primaryView: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
-		view.layer.cornerRadius = Constants.cornerRadius
+		view.layer.cornerRadius = C.SupportedView.cornerRadius
 		view.layer.borderWidth = 1.5
 		view.layer.borderColor = UIColor.fieldBorderNormal.cgColor
 		return view
@@ -26,7 +26,7 @@ class SupportedView: UIView {
 		let label = UILabel()
 		label.text = "Supporting text"
 		label.textColor = .fieldHint
-		label.font = .nunitoSans(ofSize: Constants.supportingFontSyze)
+		label.font = C.Font.supporting
 		label.numberOfLines = 1
 		return label
 	}()
@@ -37,7 +37,7 @@ class SupportedView: UIView {
 		label.adjustsFontSizeToFitWidth = true
 		label.minimumScaleFactor = 0.2
 		label.textColor = .secondaryTitle
-		label.font = .nunitoSans(ofSize: Constants.titleFontSize)
+		label.font = C.Font.bodyMedium
 		return label
 	}()
 	
@@ -80,19 +80,19 @@ class SupportedView: UIView {
 		
 		primaryView.snp.makeConstraints { make in
 			make.top.left.right.equalToSuperview()
-			make.height.equalTo(Constants.primaryViewHeight)
+			make.height.equalTo(C.SupportedView.primaryHeight)
 		}
 				
 		titleLabel.snp.makeConstraints { make in
 			make.centerY.equalTo(primaryView)
-			make.left.equalToSuperview().offset(Constants.padding)
+			make.left.equalToSuperview().offset(C.padding)
 		}
 		
 		supportingLabel.snp.makeConstraints { make in
-			make.top.equalTo(primaryView.snp.bottom).offset(5)
-			make.left.equalToSuperview().offset(Constants.padding)
+			make.top.equalTo(primaryView.snp.bottom)
+			make.left.equalToSuperview().offset(C.padding)
 			make.bottom.equalToSuperview()
-			make.height.equalTo(Constants.supportingFontSyze)
+			make.height.equalTo(C.SupportedView.supportingHeight)
 		}
 	}
 	
@@ -128,24 +128,4 @@ class SupportedView: UIView {
 		}
 	}
 	
-}
-
-// MARK: - Constants
-extension SupportedView {
-	
-	private struct Constants {
-		
-		private static let ratio = CGFloat.ratio
-		
-		static let cornerRadius = 4 * ratio
-		static let primaryViewHeight = 56 * ratio
-		
-		
-		static let fieldHeight = 56 * ratio
-		static let padding = 16 * ratio
-		
-		static let titleFontSize = 16 * ratio
-		
-		static let supportingFontSyze = 12 * ratio
-	}
 }

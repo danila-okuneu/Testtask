@@ -13,7 +13,7 @@ final class SignUpResultViewController: UIViewController {
 	private let stackView: UIStackView = {
 		let stack = UIStackView()
 		stack.axis = .vertical
-		stack.spacing = 24
+		stack.spacing = C.spacing
 		return stack
 	}()
 	
@@ -25,7 +25,7 @@ final class SignUpResultViewController: UIViewController {
 	
 	private let resultLabel: UILabel = {
 		let label = UILabel()
-		label.font = .nunitoSans(ofSize: 20)
+		label.font = C.Font.heading
 		label.textAlignment = .center
 		label.numberOfLines = 0
 		label.textColor = .primaryText
@@ -84,12 +84,12 @@ final class SignUpResultViewController: UIViewController {
 	private func setupConstraints() {
 		
 		stackView.snp.makeConstraints { make in
-			make.center.equalToSuperview()
-			
+			make.centerY.equalToSuperview()
+			make.horizontalEdges.equalToSuperview().inset(C.padding)
 		}
 		
 		resultImageView.snp.makeConstraints { make in
-			make.size.equalTo(200)
+			make.size.equalTo(C.Result.imageHeight)
 		}
 	}
 	

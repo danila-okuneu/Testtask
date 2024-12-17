@@ -27,7 +27,7 @@ final class StateNavigationController: UINavigationController {
 		appearance.configureWithOpaqueBackground()
 		appearance.backgroundColor = .clear
 		appearance.titleTextAttributes = [
-			NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 18),
+			NSAttributedString.Key.font: C.Font.heading,
 			NSAttributedString.Key.foregroundColor: UIColor.primaryText
 		]
 		

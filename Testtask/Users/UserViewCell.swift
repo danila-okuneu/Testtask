@@ -8,7 +8,6 @@
 import UIKit
 import SnapKit
 import Kingfisher
-import SkeletonView
 
 final class UserViewCell: UITableViewCell {
 	
@@ -25,10 +24,8 @@ final class UserViewCell: UITableViewCell {
 		let imageView = UIImageView()
 		imageView.backgroundColor = .systemGray6
 		imageView.image = .noConnection
-		imageView.isSkeletonable = true
-		imageView.layer.cornerRadius = Constants.photoSize / 2
+		imageView.layer.cornerRadius = C.UserCell.photoCornerRadius
 		imageView.layer.masksToBounds = true
-		imageView.isSkeletonable = true
 		return imageView
 	}()
 	
@@ -42,7 +39,7 @@ final class UserViewCell: UITableViewCell {
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .primaryText
-		label.font = .nunitoSans(ofSize: 18)
+		label.font = C.Font.bodyLarge
 		label.text = "name"
 		label.numberOfLines = 0
 		return label
@@ -52,14 +49,14 @@ final class UserViewCell: UITableViewCell {
 		let label = UILabel()
 		label.textColor = .secondaryText
 		label.text = "position"
-		label.font = .nunitoSans(ofSize: 14)
+		label.font = C.Font.bodySmall
 		return label
 	}()
 	
 	private let emailLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .primaryText
-		label.font = .nunitoSans(ofSize: 14)
+		label.font = C.Font.bodySmall
 		label.numberOfLines = 1
 		label.text = "email adress"
 		return label
@@ -68,7 +65,7 @@ final class UserViewCell: UITableViewCell {
 	private let phoneLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .primaryText
-		label.font = .nunitoSans(ofSize: 14)
+		label.font = C.Font.bodySmall
 		label.numberOfLines = 1
 		label.text = "phone number"
 		return label
@@ -79,9 +76,7 @@ final class UserViewCell: UITableViewCell {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
 		setupViews()
-		setupTextSkeletons()
 		self.layoutIfNeeded()
-		showSkeletons()
 	}
 	
 
@@ -98,10 +93,7 @@ final class UserViewCell: UITableViewCell {
 		phoneLabel.text = ""
 		photoImageView.kf.cancelDownloadTask()
 
-		showSkeletons()
 		super.prepareForReuse()
-		
-		
 	}
 	
 	// MARK: - Layout
@@ -122,27 +114,24 @@ final class UserViewCell: UITableViewCell {
 		vStack.addArrangedSubview(phoneLabel)
 		
 		vStack.setCustomSpacing(8, after: positionLabel)
-		
-		
 		setupConstraints()
 	}
 	
 	private func setupConstraints() {
 		
 		hStack.snp.makeConstraints { make in
-			make.verticalEdges.equalToSuperview().inset(24).priority(999)
+			make.verticalEdges.equalToSuperview().inset(C.padding).priority(999)
 			make.horizontalEdges.equalToSuperview()
 		}
 		
 		photoImageView.snp.makeConstraints { make in
-			make.size.equalTo(Constants.photoSize)
+			make.size.equalTo(C.UserCell.photoSize)
 			make.horizontalEdges.equalToSuperview()
 		}
 	}
 	
 	// MARK: - Methods
 	func update(with user: User) {
-		hideTextSkeletons()
 		nameLabel.text = user.name
 		positionLabel.text = user.position
 		emailLabel.text = user.email
@@ -150,45 +139,5 @@ final class UserViewCell: UITableViewCell {
 		
 		guard let url = URL(string: user.photo) else { return }
 		photoImageView.kf.setImage(with: url)
-		photoImageView.hideSkeleton()
 	}
-	
-	private func setupTextSkeletons() {
-		[nameLabel, positionLabel, emailLabel, phoneLabel].forEach { label in
-			label.isSkeletonable = true
-			
-			let randomOffset = CGFloat((0...100).randomElement()!)
-			label.skeletonPaddingInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: randomOffset)
-		}
-	}
-	
-	func showSkeletons() {
-		[nameLabel, positionLabel, emailLabel, phoneLabel, photoImageView].forEach { view in
-			view.showAnimatedGradientSkeleton()
-		}
-	}
-	
-	func hideTextSkeletons() {
-		[nameLabel, positionLabel, emailLabel, phoneLabel].forEach { view in
-			view.hideSkeleton(transition: .crossDissolve(0.2))
-		}
-	}
-	
-	
-	
-}
-
-// MARK: - Constants
-extension UserViewCell {
-	
-	private struct Constants {
-		
-		private static let ratio = CGFloat.ratio
-		
-		static let photoSize = 50 * ratio
-		
-		
-		
-	}
-	
 }

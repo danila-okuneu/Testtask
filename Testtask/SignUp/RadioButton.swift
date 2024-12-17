@@ -15,19 +15,19 @@ final class RadioButton: UIButton {
 	// the user interaction area could become too small.
 	let circleView: UIView = {
 		let view = UIView()
-		view.layer.cornerRadius = Constants.size / 2
+		view.layer.cornerRadius = C.RadioButton.size / 2
 		view.backgroundColor = .white
-		view.layer.borderWidth = Constants.borderWidht
+		view.layer.borderWidth = C.RadioButton.borderWidht
 		view.layer.borderColor = UIColor.fieldBorderNormal.cgColor
 		view.isUserInteractionEnabled = false
-		view.layer.cornerRadius = Constants.size / 2
+		view.layer.cornerRadius = C.RadioButton.size / 2
 		view.backgroundColor = .white
 		return view
 	}()
 	
 	let innerCircleView: UIView = {
 		let view = UIView()
-		view.layer.cornerRadius = Constants.circleSize / 2
+		view.layer.cornerRadius = C.RadioButton.innerCircleSize / 2
 		view.isUserInteractionEnabled = false
 		view.backgroundColor = .white
 		return view	}()
@@ -54,13 +54,13 @@ final class RadioButton: UIButton {
 	private func setupConstraints() {
 		
 		circleView.snp.makeConstraints { make in
-			make.width.height.equalTo(Constants.size)
+			make.width.height.equalTo(C.RadioButton.size)
 			make.center.equalToSuperview()
 		}
 		
 		innerCircleView.snp.makeConstraints { make in
 			make.center.equalToSuperview()
-			make.size.equalTo(Constants.circleSize)
+			make.size.equalTo(C.RadioButton.innerCircleSize)
 		}
 	}
 	
@@ -77,16 +77,5 @@ final class RadioButton: UIButton {
 			self.circleView.layer.borderColor = UIColor.fieldBorderNormal.cgColor
 			self.circleView.backgroundColor = .white
 		}
-	}
-}
-
-extension RadioButton {
-	
-	private struct Constants {
-		
-		static let size = 13 * CGFloat.ratio // without border
-		static let borderWidht = 1 * CGFloat.ratio
-		
-		static let circleSize = 6 * CGFloat.ratio
 	}
 }

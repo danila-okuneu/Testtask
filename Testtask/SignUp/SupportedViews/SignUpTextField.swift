@@ -18,6 +18,7 @@ final class SignUpTextField: SupportedView {
 	
 	private let textField: UITextField = {
 		let field = UITextField()
+		field.font = C.Font.bodyMedium
 		field.textColor = .primaryText
 		return field
 	}()
@@ -56,8 +57,8 @@ final class SignUpTextField: SupportedView {
 	private func setupConstraints() {
 		
 		textField.snp.makeConstraints { make in
-			make.left.equalToSuperview().offset(Constants.padding)
-			make.bottom.equalToSuperview().offset(-Constants.fieldBottomOffset)
+			make.left.equalToSuperview().offset(C.padding)
+			make.bottom.equalToSuperview().offset(-C.semipadding)
 		}
 	}
 	
@@ -66,13 +67,13 @@ final class SignUpTextField: SupportedView {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(startEditing))
 		primaryView.addGestureRecognizer(gesture)
 	}
-
+	
 	// MARK: - Methods
 	func movePlaceholder() {
 		
-		let scale = Constants.placeholderRatio
+		let scale: CGFloat = 12 / 16
 		let translationX = -titleLabel.bounds.width * (1 - scale) / 2
-		let translationY = -self.primaryView.bounds.height / 2 + titleLabel.bounds.height / 2 + Constants.placeholderTopOffset
+		let translationY = -self.primaryView.bounds.height / 2 + titleLabel.bounds.height / 2 + C.semipadding
 		
 		UIView.animate(withDuration: 0.3) {
 			self.titleLabel.transform = CGAffineTransform(scale, 0, 0, scale, translationX, translationY)
@@ -113,28 +114,6 @@ final class SignUpTextField: SupportedView {
 	
 	@objc private func startEditing() {
 		textField.becomeFirstResponder()
-	}
-	
-}
-
-// MARK: - Constants
-extension SignUpTextField {
-	
-	
-	// xO
-	// O - offset
-	// x - Top, Left, Bottom, Right
-	private struct Constants {
-		
-		private static let ratio = CGFloat.ratio
-		
-		static let padding = 16 * ratio
-		
-		static let placeholderRatio = 12 / 16 * ratio
-		static let placeholderTopOffset = 8 * ratio
-		
-		static let fieldBottomOffset = 8 * ratio
-		
 	}
 	
 }

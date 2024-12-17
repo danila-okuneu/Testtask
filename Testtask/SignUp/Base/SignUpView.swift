@@ -54,9 +54,9 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		scrollView.alwaysBounceVertical = true
 		scrollView.showsVerticalScrollIndicator = false
 		scrollView.contentInset = UIEdgeInsets(
-			top: Constants.offset,
+			top: C.padding,
 			left: 0,
-			bottom: Constants.offset,
+			bottom: C.padding,
 			right: 0
 		)
 		return scrollView
@@ -65,14 +65,14 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 	private let contentStack: UIStackView = {
 		let stack = UIStackView()
 		stack.axis = .vertical
-		stack.spacing = Constants.stackSpacing
+		stack.spacing = C.spacing
 		return stack
 	}()
 	
 	private let fieldsStackView: UIStackView = {
 		let stack = UIStackView()
 		stack.axis = .vertical
-		stack.spacing = Constants.offset
+		stack.spacing = C.semispacing
 		return stack
 	}()
 	
@@ -84,7 +84,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		let label = UILabel()
 		label.text = "Select your position"
 		label.textColor = .primaryText
-		label.font = .nunitoSans(ofSize: Constants.selectTitleFontSize)
+		label.font = C.Font.bodyLarge
 		return label
 	}()
 	
@@ -113,7 +113,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		appearance.backgroundColor = .accent
 	
 		self.navigationController?.navigationBar.backgroundColor = .accent
-		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 24)]
+		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: C.Font.heading]
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -167,7 +167,7 @@ final class SignUpViewController: UIViewController, SignUpViewProtocol {
 		
 		scrollView.snp.makeConstraints { make in
 			make.top.equalTo(view.safeAreaLayoutGuide)
-			make.horizontalEdges.equalToSuperview().inset(Constants.contentPadding)
+			make.horizontalEdges.equalToSuperview().inset(C.padding)
 			make.bottom.equalToSuperview()
 		}
 		
@@ -408,22 +408,6 @@ extension SignUpViewController: UploadViewDelegate {
 		presenter?.didPickPhoto(nil)
 	}
 }
-
-// MARK: - Constants
-extension SignUpViewController {
-	
-	private struct Constants {
-		
-		private static let ratio = CGFloat.ratio
-		
-		static let contentPadding = 16 * ratio
-		static let offset = 32 * ratio
-		static let stackSpacing = 24 * ratio
-		static let selectTitleFontSize = 18 * ratio
-		
-	}
-}
-
 
 @available(iOS 17.0, *)
 #Preview {

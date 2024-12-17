@@ -31,7 +31,7 @@ final class ConnectionViewController: UIViewController, ConnectionViewProtocol {
 	private let stackView: UIStackView = {
 		let stack = UIStackView()
 		stack.axis = .vertical
-		stack.spacing = 24
+		stack.spacing = C.spacing
 		return stack
 	}()
 	
@@ -44,7 +44,7 @@ final class ConnectionViewController: UIViewController, ConnectionViewProtocol {
 	
 	private let resultLabel: UILabel = {
 		let label = UILabel()
-		label.font = .nunitoSans(ofSize: 20)
+		label.font = C.Font.heading
 		label.textAlignment = .center
 		label.text = "There is no internet connection"
 		label.textColor = .primaryText
@@ -86,11 +86,11 @@ final class ConnectionViewController: UIViewController, ConnectionViewProtocol {
 		
 		stackView.snp.makeConstraints { make in
 			make.centerY.equalToSuperview()
-			make.horizontalEdges.equalToSuperview()
+			make.horizontalEdges.equalToSuperview().inset(C.padding)
 		}
 		
 		connectionImageView.snp.makeConstraints { make in
-			make.height.equalTo(200)
+			make.height.equalTo(C.Connection.imageHeight)
 		}
 	}
 	

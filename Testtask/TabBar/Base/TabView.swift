@@ -72,7 +72,7 @@ extension TabViewController: TabViewInputs {
 	) {
 		viewController.tabBarItem.title = title
 		viewController.tabBarItem.image = image
-		viewController.tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.nunitoSans(ofSize: 14)], for: .normal)
+		viewController.tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: C.Font.bodySmall], for: .normal)
 		
 		
 		if let vcs = viewControllers {

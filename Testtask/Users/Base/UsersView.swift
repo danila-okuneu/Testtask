@@ -43,18 +43,13 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 		let tableView = UITableView()
 		tableView.register(UserViewCell.self, forCellReuseIdentifier: UserViewCell.identifire)
 		tableView.showsVerticalScrollIndicator = false
-		tableView.separatorInset.left = 72
+		tableView.separatorInset.left = C.UsersTable.separatorInset
 		tableView.allowsSelection = false
 		tableView.backgroundColor = .white
-		let action = UIAction { action in
-			print("triggered")
-			tableView.refreshControl?.endRefreshing()
-		}
-		
 		let spinner = UIActivityIndicatorView(style: .medium)
 		spinner.color = .gray
 		spinner.startAnimating()
-		spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
+		spinner.frame = CGRect(x: 0.0, y: 0.0, width: tableView.bounds.width, height: C.UsersTable.spinnerHeight)
 
 		tableView.tableFooterView = spinner
 		
@@ -79,7 +74,6 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 		navigationItem.title = "Working with GET request"
 		view.addSubview(tableView)
 		
-		
 		setupTableView()
 		setupConstraints()
 	}
@@ -89,7 +83,7 @@ final class UsersViewController: UIViewController, UsersViewProtocol {
 		tableView.snp.makeConstraints { make in
 			make.top.equalTo(view.safeAreaLayoutGuide)
 			make.bottom.equalToSuperview()
-			make.horizontalEdges.equalToSuperview().inset(16)
+			make.horizontalEdges.equalToSuperview().inset(C.padding)
 		}
 	}
 	
